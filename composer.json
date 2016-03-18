@@ -17,7 +17,17 @@
             "email": "support@alledia.com"
         }
     ],
+     "config": {
+        "vendor-dir": "src/admin/vendor"
+    },
+    "repositories": [
+        {
+            "url": "https://github.com/helpscout/helpscout-api-php.git",
+            "type": "git"
+        }
+    ],
     "require": {
-        "php": ">= 5.3"
+        "php": ">= 5.3",
+        "helpscout/api": "*"
     }
 }

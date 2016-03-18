@@ -26,6 +26,8 @@ if (!defined('ALLEDIA_FRAMEWORK_LOADED')) {
 }
 
 if (defined('ALLEDIA_FRAMEWORK_LOADED')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+
     // Define the constant that say OSHelpScout is ok to run
     define('OSHELPSCOUT_LOADED', 1);
 

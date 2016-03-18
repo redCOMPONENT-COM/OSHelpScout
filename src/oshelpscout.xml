@@ -34,8 +34,6 @@
 
     <files folder="site">
         <folder>language</folder>
-        <folder>models</folder>
-        <folder>views</folder>
         <filename>controller.php</filename>
         <filename>oshelpscout.php</filename>
     </files>
@@ -50,10 +48,9 @@
     <administration>
         <menu img="class:component">COM_OSHELPSCOUT</menu>
         <files folder="admin">
-            <folder>controllers</folder>
-            <folder>views</folder>
-            <folder>models</folder>
             <folder>language</folder>
+            <folder>vendor</folder>
+            <folder>views</folder>
             <folder>library</folder>
             <filename>access.xml</filename>
             <filename>config.xml</filename>
