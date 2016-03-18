@@ -52,6 +52,7 @@
             <folder>language</folder>
             <folder>vendor</folder>
             <folder>views</folder>
+            <folder>form</folder>
             <folder>library</folder>
             <filename>access.xml</filename>
             <filename>config.xml</filename>

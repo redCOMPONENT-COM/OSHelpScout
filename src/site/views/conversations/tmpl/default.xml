@@ -5,8 +5,16 @@
             <![CDATA[COM_OSHELPSCOUT_CONVERSATIONS_VIEW_DEFAULT_DESC]]>
         </message>
     </layout>
-    <fields name="params">
-        <fieldset name="basic" label="COM_OSHELPSCOUT_OPTIONS">
-        </fieldset>
-    </fields>
+    <fieldset
+        addfieldpath="/administrator/components/com_oshelpscout/form/fields">
+        <fields name="params">
+            <fieldset name="basic" label="COM_OSHELPSCOUT_OPTIONS">
+                <field name="helpscout_mailbox"
+                    type="hsmailboxes"
+                    default=""
+                    label="COM_OSHELPSCOUT_FIELD_HELPSCOUT_MAILBOX_LABEL"
+                    description="COM_OSHELPSCOUT_FIELD_HELPSCOUT_MAILBOX_DESC" />
+            </fieldset>
+        </fields>
+    </fieldset>
 </metadata>
