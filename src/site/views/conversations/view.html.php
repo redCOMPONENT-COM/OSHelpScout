@@ -24,15 +24,14 @@ class OSHelpScoutViewConversations extends JViewLegacy
         $this->conversations = array();
 
         if (!$user->guest) {
-            // Locate the customer by email
-            $customers = $hs->searchCustomersByEmail($user->email)->getItems();
-            if (!empty($customers)) {
-                $customer = $customers[0];
 
+            // Locate the customer by email
+            $customerId = OSHelpScout\Free\Helper::getCustomerIdByEmail($user->email);
+            if (!empty($customerId)) {
                 // Get the customer conversations
                 $conversationsResult = $hs->getConversationsForCustomerByMailbox(
                     $params->get('helpscout_mailbox'),
-                    $customer->getId()
+                    $customerId
                 );
                 // @todo: implement pagination
 

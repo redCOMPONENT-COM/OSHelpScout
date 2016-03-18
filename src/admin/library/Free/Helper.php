@@ -8,6 +8,7 @@
 
 namespace Alledia\OSHelpScout\Free;
 
+use Alledia\Framework;
 use HelpScout;
 
 defined('_JEXEC') or die();
@@ -32,5 +33,25 @@ abstract class Helper
         }
 
         return static::$apiInstance;
+    }
+
+    public static function getCustomerIdByEmail($email)
+    {
+        $hs       = static::getAPIInstance();
+        $session  = Framework\Factory::getSession();
+        $customerId = $session->get('oshelpscout_customer_id');
+
+        if (empty($customerId)) {
+            // Locate the customer by email
+            $customers = $hs->searchCustomersByEmail($email, 1, 'id');
+            if (!empty($customers->items)) {
+                $customer = $customers->items[0];
+                $customerId = $customer->id;
+
+                $session->set('oshelpscout_customer_id', $customerId);
+            }
+        }
+
+        return $customerId;
     }
 }
