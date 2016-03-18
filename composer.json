@@ -1,0 +1,23 @@
+{
+    "name"             : "Alledia/OSHelpScout",
+    "description"      : "OSHelpScout",
+    "minimum-stability": "stable",
+    "license"          : "GPL-2+",
+    "type"             : "joomla.component",
+    "extra"            : {
+        "element"        : "com_oshelpscout",
+        "element-short"  : "oshelpscout",
+        "name"           : "OSHelpScout",
+        "client"         : "administrator",
+        "package-license": "free"
+    },
+    "authors": [
+        {
+            "name" : "Alledia.com",
+            "email": "support@alledia.com"
+        }
+    ],
+    "require": {
+        "php": ">= 5.3"
+    }
+}

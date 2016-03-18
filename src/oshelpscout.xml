@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.4.0" method="upgrade">
+    <name>com_oshelpscout</name>
+    <author>Alledia</author>
+    <creationDate>March 18 2016</creationDate>
+    <copyright>Copyright (C) 2016 Open Source Training, LLC</copyright>
+    <license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+    <authorEmail>support@alledia.com</authorEmail>
+    <authorUrl>https://www.alledia.com</authorUrl>
+    <version>0.1.0b1</version>
+    <description>COM_OSHELPSCOUT_DESCRIPTION</description>
+
+    <alledia>
+        <element>oshelpscout</element>
+        <namespace>OSHelpScout</namespace>
+        <license>free</license>
+        <relatedExtensions>
+            <extension
+                type="library"
+                element="allediaframework">AllediaFramework</extension>
+
+            <extension
+                type="plugin"
+                group="system"
+                element="ossystem"
+                publish="true"
+                ordering="first">OSSystem</extension>
+
+        </relatedExtensions>
+        <include>AllediaFreeDefaultFiles</include>
+    </alledia>
+
+    <scriptfile>script.installer.php</scriptfile>
+
+    <files folder="site">
+        <folder>language</folder>
+        <folder>models</folder>
+        <folder>views</folder>
+        <filename>controller.php</filename>
+        <filename>oshelpscout.php</filename>
+    </files>
+
+    <media destination="com_oshelpscout" folder="media">
+        <folder>css</folder>
+        <folder>js</folder>
+        <folder>images</folder>
+        <folder>fonts</folder>
+    </media>
+
+    <administration>
+        <menu img="class:component">COM_OSHELPSCOUT</menu>
+        <files folder="admin">
+            <folder>controllers</folder>
+            <folder>views</folder>
+            <folder>models</folder>
+            <folder>language</folder>
+            <folder>library</folder>
+            <filename>access.xml</filename>
+            <filename>config.xml</filename>
+            <filename>controller.php</filename>
+            <filename>oshelpscout.php</filename>
+            <filename>include.php</filename>
+        </files>
+    </administration>
+
+    <updateservers>
+        <server type="extension" priority="1" name="OSHelpScout"><![CDATA[https://deploy.ostraining.com/client/update/free/stable/com_oshelpscout]]></server>
+    </updateservers>
+</extension>

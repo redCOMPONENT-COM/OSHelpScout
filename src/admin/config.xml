@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <fieldset
+        name="general"
+        label="COM_OSHELPSCOUT_GENERAL"
+        addfieldpath="/administrator/components/com_oshelpscout/form/fields">
+
+        <field
+            name="helpscout_api_key"
+            type="text"
+            default=""
+            label="COM_OSHELPSCOUT_API_KEY" />
+
+
+        <field
+            type="customfooter"
+            name="customfooter"
+            media="com_oshelpscout"
+            showgoproad="0"
+            jedurl="#" />
+    </fieldset>
+
+    <fieldset
+        name="permissions"
+        label="JCONFIG_PERMISSIONS_LABEL"
+        description="JCONFIG_PERMISSIONS_DESC">
+
+        <field
+            name="rules"
+            type="rules"
+            label="JCONFIG_PERMISSIONS_LABEL"
+            class="inputbox"
+            validate="rules"
+            filter="rules"
+            component="com_oshelpscout"
+            section="component" />
+    </fieldset>
+</config>
