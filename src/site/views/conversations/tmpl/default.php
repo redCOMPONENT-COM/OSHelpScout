@@ -23,7 +23,7 @@ defined('_JEXEC') or die('Restricted access');
                 <tr>
                     <td><?php echo $conversation->getSubject(); ?></td>
                     <td><?php echo $conversation->getModifiedAt(); ?></td>
-                    <td><?php echo $conversation->getStatus(); ?></td>
+                    <td><?php echo ucfirst($conversation->getStatus()); ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
