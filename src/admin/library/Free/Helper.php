@@ -20,6 +20,11 @@ abstract class Helper
 {
     static protected $apiInstance;
 
+    /**
+     * Get the HelpScout API Instance
+     *
+     * @return HelpScout\ApliClient
+     */
     public static function getAPIInstance()
     {
         if (empty(static::$apiInstance)) {
@@ -35,6 +40,14 @@ abstract class Helper
         return static::$apiInstance;
     }
 
+    /**
+     * Get the customer ID in HelpScout based on the sent email. The Id
+     * is cached in the session, to reduce API calls.
+     *
+     * @param  string  The customer's email address
+     *
+     * @return int
+     */
     public static function getCustomerIdByEmail($email)
     {
         $hs       = static::getAPIInstance();
