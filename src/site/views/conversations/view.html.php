@@ -6,11 +6,12 @@
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-use Alledia\OSHelpScout\Free;
-
 defined('_JEXEC') or die;
 
-class OSHelpScoutController extends Free\Joomla\Controller\Site
+class OSHelpScoutViewConversations extends JViewLegacy
 {
-
+    public function display($tpl = null)
+    {
+        parent::display($tpl);
+    }
 }

@@ -34,6 +34,7 @@
 
     <files folder="site">
         <folder>language</folder>
+        <folder>views</folder>
         <filename>controller.php</filename>
         <filename>oshelpscout.php</filename>
     </files>

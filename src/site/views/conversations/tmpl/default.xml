@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+    <layout title="COM_OSHELPSCOUT_CONVERSATIONS_VIEW_DEFAULT_TITLE">
+        <message>
+            <![CDATA[COM_OSHELPSCOUT_CONVERSATIONS_VIEW_DEFAULT_DESC]]>
+        </message>
+    </layout>
+    <fields name="params">
+        <fieldset name="basic" label="COM_OSHELPSCOUT_OPTIONS">
+        </fieldset>
+    </fields>
+</metadata>

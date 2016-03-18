@@ -6,7 +6,7 @@
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-use Alledia\Framework\Joomla\Extension;
+use Alledia\Framework\AutoLoader;
 
 defined('_JEXEC') or die();
 
@@ -28,8 +28,9 @@ if (!defined('ALLEDIA_FRAMEWORK_LOADED')) {
 if (defined('ALLEDIA_FRAMEWORK_LOADED')) {
     require_once __DIR__ . '/vendor/autoload.php';
 
-    // Define the constant that say OSHelpScout is ok to run
-    define('OSHELPSCOUT_LOADED', 1);
+    define('OSHELPSCOUT_LIBRARY', __DIR__ . '/library');
 
-    Extension\Helper::loadLibrary('com_oshelpscout');
+    AutoLoader::register('Alledia\\OSHelpScout', OSHELPSCOUT_LIBRARY);
+
+    define('OSHELPSCOUT_LOADED', 1);
 }
