@@ -18,24 +18,36 @@ $threads = $this->conversation->getThreads();
         </div>
 
         <?php foreach ($threads as $msg) : ?>
-        <div class="uk-width-1-1">
-            <div class="oshs-message-block">
-                <?php if (in_array($msg->getType(), array('message', 'customer'))) : ?>
-                    <div class="oshs-message-head">
-                        <?php $date = new JDate($msg->getCreatedAt()); ?>
-                        <?php echo JText::_('COM_OSHELPSCOUT_CREATED_AT'); ?>: <?php echo $date->format(JText::_('DATE_FORMAT_LC2')); ?>
-                    </div>
+            <?php if (in_array($msg->getType(), array('message', 'customer'))) : ?>
+                <?php $createdBy     = $msg->getCreatedBy(); ?>
+                <?php $createdByType = $createdBy->getType(); ?>
 
-                    <div class="oshs-message-body">
-                        <?php echo $msg->getBody(); ?>
+                <div class="uk-width-1-1">
+                    <div class="oshs-message-block oshs-message-by-<?php echo $createdByType; ?>">
+                        <div class="oshs-message-head">
+                            <?php $date = new JDate($msg->getCreatedAt()); ?>
+                            <?php echo JText::_('COM_OSHELPSCOUT_CREATED_AT'); ?>: <?php echo $date->format(JText::_('DATE_FORMAT_LC2')); ?>
+
+                            <?php if ($createdByType == 'customer') : ?>
+                                <div class="uk-badge"><?php echo JText::_('COM_OSHELPSCOUT_YOU'); ?></div>
+                            <?php else : ?>
+                                <div class="uk-badge uk-badge-warning"><?php echo JText::_('COM_OSHELPSCOUT_STAFF'); ?></div>
+                                <div>
+                                    <?php echo JText::_('COM_OSHELPSCOUT_BY'); ?>: <?php echo $createdBy->getFirstName() . ' ' . $createdBy->getLastName(); ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="oshs-message-body">
+                            <?php echo $msg->getBody(); ?>
+                        </div>
                     </div>
-                <?php endif; ?>
-            </div>
-        </div>
+                </div>
+            <?php endif; ?>
         <?php endforeach; ?>
 
         <div>
-            <a href="<?php JRoute::_('index.php?option=com_oshelpscout&view=conversations'); ?>">
+            <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversations'); ?>">
                 <?php echo JText::_('COM_OSHELPSCOUT_BACK_TO_LIST'); ?>
             </a>
         </div>

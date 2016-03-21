@@ -16,3 +16,11 @@
     white-space: pre-line;
     padding: 10px;
 }
+
+.oshs-message-by-customer .oshs-message-body {
+    background-color: #fbfbfb;
+}
+
+.oshs-message-by-user {
+
+}
