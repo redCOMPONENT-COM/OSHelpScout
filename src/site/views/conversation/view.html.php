@@ -11,7 +11,7 @@ use Alledia\OSHelpScout;
 
 defined('_JEXEC') or die;
 
-class OSHelpScoutViewConversations extends JViewLegacy
+class OSHelpScoutViewConversation extends JViewLegacy
 {
     public function display($tpl = null)
     {
@@ -20,21 +20,27 @@ class OSHelpScoutViewConversations extends JViewLegacy
         $app      = Framework\Factory::getApplication();
         $menuitem = $app->getMenu()->getActive();
         $params   = $menuitem->params;
+        $id       = $app->input->get('id');
 
-        $this->conversations = array();
+        $this->conversation = null;
 
-        if (!$user->guest) {
+        if (!$user->guest && !empty($id)) {
             // Locate the customer by email
             $customerId = OSHelpScout\Free\Helper::getCustomerIdByEmail($user->email);
             if (!empty($customerId)) {
                 // Get the customer conversations
-                $conversationsResult = $hs->getConversationsForCustomerByMailbox(
-                    $params->get('helpscout_mailbox'),
-                    $customerId
-                );
-                // @todo: implement pagination
+                $conversation = $hs->getConversation($id);
 
-                $this->conversations = $conversationsResult->getItems();
+                // Validate the mailbox and user
+                $mailbox = $conversation->getMailbox();
+                if ($mailbox->getId() == $params->get('helpscout_mailbox')) {
+                    // Mailbox is valid. Checking user
+                    $customer = $conversation->getCustomer();
+                    if ($customer->getEmail() === $user->email) {
+                        // Same user, so we can display the conversation
+                        $this->conversation = $conversation;
+                    }
+                }
             }
         }
 
