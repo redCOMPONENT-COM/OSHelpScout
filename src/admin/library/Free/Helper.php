@@ -44,7 +44,7 @@ abstract class Helper
      * Get the customer ID in HelpScout based on the sent email. The Id
      * is cached in the session, to reduce API calls.
      *
-     * @param  string  The customer's email address
+     * @param  string  $email  The customer's email address
      *
      * @return int
      */
@@ -66,5 +66,75 @@ abstract class Helper
         }
 
         return $customerId;
+    }
+
+    /**
+     * Get the customer ID in HelpScout based on the current user.
+     *
+     * @return int|bool  Returns the ID if logged in and exists. If not, false.
+     */
+    public static function getCurrentCustomerId()
+    {
+        $user = Framework\Factory::getUser();
+
+        if ($user->guest) {
+            return false;
+        }
+
+        return static::getCustomerIdByEmail($user->email);
+    }
+
+    /**
+     * Get Mailbox Id for the current menu. Returns false, if not found.
+     *
+     * @return int
+     */
+    public static function getCurrentMailboxId()
+    {
+        $app       = Framework\Factory::getApplication();
+        $mailboxId = $app->getMenu()->getActive()->params->get('helpscout_mailbox');
+
+        if (empty($mailboxId)) {
+            return false;
+        }
+
+        return $mailboxId;
+    }
+
+    /**
+     * Get the conversation based on ID, but validating the user's rights.
+     * If the user's email is different from the email in the conversation,
+     * return false. Check if the user owns the conversation.
+     *
+     * @param  int $conversationId  The conversation's Id
+     * @param  int $mailboxId       If specified will compare the
+     *                              conversation's mailbox with the given Id.
+     *
+     * @return HelpScout\Conversation
+     */
+    public static function getConversation($conversationId, $mailboxId = null)
+    {
+        $hs   = static::getAPIInstance();
+        $user = Framework\Factory::getUser();
+
+        // Validate the current user as customer
+        $customerId = static::getCurrentCustomerId();
+        if (!empty($customerId)) {
+            // Get the customer conversations
+            $conversation = $hs->getConversation($conversationId);
+
+            // Check if the conversation is on the correct mailbox
+            $mailbox = $conversation->getMailbox();
+            if ($mailbox->getId() == $mailboxId) {
+                // Check if the user owns the conversation
+                $customer = $conversation->getCustomer();
+                if ($customer->getEmail() === $user->email) {
+                    // Same user, so we can display the conversation
+                    return $conversation;
+                }
+            }
+        }
+
+        return false;
     }
 }

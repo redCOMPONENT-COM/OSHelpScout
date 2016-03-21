@@ -15,27 +15,22 @@ class OSHelpScoutViewConversations extends JViewLegacy
 {
     public function display($tpl = null)
     {
-        $hs       = OSHelpScout\Free\Helper::getAPIInstance();
-        $user     = Framework\Factory::getUser();
-        $app      = Framework\Factory::getApplication();
-        $menuitem = $app->getMenu()->getActive();
-        $params   = $menuitem->params;
+        $hs        = OSHelpScout\Free\Helper::getAPIInstance();
+        $mailboxId = OSHelpScout\Free\Helper::getCurrentMailboxId();
 
         $this->conversations = array();
 
-        if (!$user->guest) {
-            // Locate the customer by email
-            $customerId = OSHelpScout\Free\Helper::getCustomerIdByEmail($user->email);
-            if (!empty($customerId)) {
-                // Get the customer conversations
-                $conversationsResult = $hs->getConversationsForCustomerByMailbox(
-                    $params->get('helpscout_mailbox'),
-                    $customerId
-                );
-                // @todo: implement pagination
+        // Locate the customer by email
+        $customerId = OSHelpScout\Free\Helper::getCurrentCustomerId();
+        if (!empty($customerId)) {
+            // Get the customer conversations
+            $conversationsResult = $hs->getConversationsForCustomerByMailbox(
+                $mailboxId,
+                $customerId
+            );
+            // @todo: implement pagination
 
-                $this->conversations = $conversationsResult->getItems();
-            }
+            $this->conversations = $conversationsResult->getItems();
         }
 
         parent::display($tpl);
