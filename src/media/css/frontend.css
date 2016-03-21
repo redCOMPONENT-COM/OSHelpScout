@@ -24,3 +24,9 @@
 .oshs-message-by-user {
 
 }
+
+.oshs-message-avatar {
+    float: right;
+    border: 4px solid #fff;
+    box-sizing: border-box;
+}

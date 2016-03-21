@@ -5,8 +5,16 @@
  * @copyright 2016 Open Source Training, LLC. All rights reserved
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
-defined('_JEXEC') or die('Restricted access');
-$threads = $this->conversation->getThreads();
+
+use Alledia\OSHelpScout;
+
+defined('_JEXEC') or die();
+
+$threads           = $this->conversation->getThreads();
+$status            = $this->conversation->getStatus();
+$statusStr         = OSHelpScout\Free\Helper::getConversationStatusStr($this->conversation);
+$conversationIndex = 0;
+$conversationCount = count($threads);
 ?>
 <h3>Conversation</h3>
 
@@ -14,28 +22,43 @@ $threads = $this->conversation->getThreads();
     <div class="uk-grid">
         <div class="uk-width-1-1">
             <h2><?php echo $this->conversation->getSubject(); ?></h2>
-            <div class="uk-badge"><?php echo $this->conversation->getStatus(); ?></div>
+            <div class="uk-badge <?php echo $status != 'closed' ? 'uk-badge-warning' : ''; ?>">
+                <?php echo JText::_($statusStr); ?>
+            </div>
         </div>
 
         <?php foreach ($threads as $msg) : ?>
+            <?php $conversationIndex++; ?>
+
             <?php if (in_array($msg->getType(), array('message', 'customer'))) : ?>
                 <?php $createdBy     = $msg->getCreatedBy(); ?>
                 <?php $createdByType = $createdBy->getType(); ?>
 
                 <div class="uk-width-1-1">
+
                     <div class="oshs-message-block oshs-message-by-<?php echo $createdByType; ?>">
                         <div class="oshs-message-head">
-                            <?php $date = new JDate($msg->getCreatedAt()); ?>
-                            <?php echo JText::_('COM_OSHELPSCOUT_CREATED_AT'); ?>: <?php echo $date->format(JText::_('DATE_FORMAT_LC2')); ?>
+                            <div class="oshs-message-avatar">
+                                <img src="http://www.gravatar.com/avatar/<?php echo md5(strtolower(trim($createdBy->getEmail()))); ?>?size=80" width="40" />
+                            </div>
 
-                            <?php if ($createdByType == 'customer') : ?>
-                                <div class="uk-badge"><?php echo JText::_('COM_OSHELPSCOUT_YOU'); ?></div>
+                            <?php $date = new JDate($msg->getCreatedAt()); ?>
+                            <?php if ($conversationIndex === $conversationCount) : ?>
+                                <?php echo JText::_('COM_OSHELPSCOUT_CREATED_AT'); ?>:
                             <?php else : ?>
-                                <div class="uk-badge uk-badge-warning"><?php echo JText::_('COM_OSHELPSCOUT_STAFF'); ?></div>
-                                <div>
-                                    <?php echo JText::_('COM_OSHELPSCOUT_BY'); ?>: <?php echo $createdBy->getFirstName() . ' ' . $createdBy->getLastName(); ?>
-                                </div>
+                                <?php echo JText::_('COM_OSHELPSCOUT_REPLIED_AT'); ?>:
                             <?php endif; ?>
+                            <?php echo $date->format(JText::_('DATE_FORMAT_LC2')); ?>
+
+                            <div class="oshs-message-by">
+                                <?php if ($createdByType == 'customer') : ?>
+                                    <?php echo JText::_('COM_OSHELPSCOUT_BY'); ?>: <?php echo JText::_('COM_OSHELPSCOUT_YOU'); ?>
+                                <?php else : ?>
+                                    <?php echo JText::_('COM_OSHELPSCOUT_BY'); ?>: <div class="uk-badge uk-badge-warning"><?php echo JText::_('COM_OSHELPSCOUT_STAFF'); ?></div>&nbsp;
+                                    <?php echo $createdBy->getFirstName() . ' ' . $createdBy->getLastName(); ?>&nbsp;
+                                <?php endif; ?>
+                            </div>
+
                         </div>
 
                         <div class="oshs-message-body">

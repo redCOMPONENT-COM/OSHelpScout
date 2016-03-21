@@ -137,4 +137,24 @@ abstract class Helper
 
         return false;
     }
+
+    /**
+     * Get the status string to display to users. This method avoids to
+     * display: closed, as a status, since the ticket can be closed but
+     * not resolved yet.
+     *
+     * @param  HelpScout\Conversation  $conversation  The conversation instance
+     *
+     * @return  string  The converted status
+     */
+    public static function getConversationStatusStr($conversation)
+    {
+        $status = $conversation->getStatus();
+
+        if ($status === 'closed') {
+            $status = 'replied';
+        }
+
+        return strtoupper('COM_OSHELPSCOUT_STATUS_' . $status);
+    }
 }

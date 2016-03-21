@@ -5,7 +5,10 @@
  * @copyright 2016 Open Source Training, LLC. All rights reserved
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
-defined('_JEXEC') or die('Restricted access');
+
+use Alledia\OSHelpScout;
+
+defined('_JEXEC') or die();
 ?>
 <h2>Conversations</h2>
 
@@ -21,6 +24,7 @@ defined('_JEXEC') or die('Restricted access');
             </thead>
             <tbody>
                 <?php foreach ($this->conversations as $conversation) : ?>
+                    <?php $statusStr = OSHelpScout\Free\Helper::getConversationStatusStr($conversation); ?>
                     <tr>
                         <td>
                             <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversation&id=' . $conversation->getId()); ?>">
@@ -28,7 +32,11 @@ defined('_JEXEC') or die('Restricted access');
                             </a>
                         </td>
                         <td><?php echo $conversation->getModifiedAt(); ?></td>
-                        <td><?php echo ucfirst($conversation->getStatus()); ?></td>
+                        <td>
+                            <div class="uk-badge <?php echo $conversation->getStatus() != 'closed' ? 'uk-badge-warning' : ''; ?>">
+                                <?php echo JText::_($statusStr); ?>
+                            </div>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
