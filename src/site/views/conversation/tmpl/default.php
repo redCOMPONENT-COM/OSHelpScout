@@ -19,9 +19,26 @@ $threads = $this->conversation->getThreads();
 
         <?php foreach ($threads as $msg) : ?>
         <div class="uk-width-1-1">
-            <?php echo $msg->getBody(); ?>
+            <div class="oshs-message-block">
+                <?php if (in_array($msg->getType(), array('message', 'customer'))) : ?>
+                    <div class="oshs-message-head">
+                        <?php $date = new JDate($msg->getCreatedAt()); ?>
+                        <?php echo JText::_('COM_OSHELPSCOUT_CREATED_AT'); ?>: <?php echo $date->format(JText::_('DATE_FORMAT_LC2')); ?>
+                    </div>
+
+                    <div class="oshs-message-body">
+                        <?php echo $msg->getBody(); ?>
+                    </div>
+                <?php endif; ?>
+            </div>
         </div>
         <?php endforeach; ?>
+
+        <div>
+            <a href="<?php JRoute::_('index.php?option=com_oshelpscout&view=conversations'); ?>">
+                <?php echo JText::_('COM_OSHELPSCOUT_BACK_TO_LIST'); ?>
+            </a>
+        </div>
     </div>
     <pre>
         <?php var_dump($this->conversation); ?>
