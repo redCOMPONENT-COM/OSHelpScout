@@ -34,6 +34,7 @@ $conversationCount = count($threads);
                 $conversationIndex++;
                 $createdBy     = $msg->getCreatedBy();
                 $createdByType = $createdBy->getType();
+                $attachments   = $msg->getAttachments();
             ?>
 
             <div class="uk-width-1-1">
@@ -67,6 +68,15 @@ $conversationCount = count($threads);
                     <div class="oshs-message-body">
                         <?php echo trim($msg->getBody()); ?>
                     </div>
+
+                    <?php if (count($attachments) > 0) : ?>
+                        <div class="oshs-message-attachments">
+                            <i class="uk-icon-paperclip"></i>
+                            <?php foreach ($attachments as $file) : ?>
+                                <a href="<?php echo $file->getUrl(); ?>" target="_blank" class="oshs-message-attachment"><?php echo $file->getFileName(); ?></a>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>

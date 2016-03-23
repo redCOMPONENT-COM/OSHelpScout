@@ -42,3 +42,23 @@
     float: left;
     box-sizing: border-box;
 }
+
+.oshs-message-attachments {
+    padding-left: 50px;
+}
+
+.oshs-message-attachments .oshs-message-attachment {
+    margin-right: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 17px;
+    border: 1px solid #f1f1f1;
+    padding: 2px 8px;
+    background: #fcfcfc;
+    font-size: 10px;
+}
+
+.oshs-message-attachments i {
+    font-size: 15px;
+    margin-right: 5px;
+}
