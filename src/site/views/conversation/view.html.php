@@ -15,10 +15,13 @@ class OSHelpScoutViewConversation extends JViewLegacy
 {
     public function display($tpl = null)
     {
-        $id        = Framework\Factory::getApplication()->input->get('id');
+        $app       = Framework\Factory::getApplication();
+        $id        = $app->input->get('id');
+        $itemId    = $app->input->get('Itemid');
         $mailboxId = OSHelpScout\Free\Helper::getCurrentMailboxId();
 
         $this->conversation = null;
+        $this->itemId       = $itemId;
 
         if (!empty($id)) {
             // Get the customer's conversation

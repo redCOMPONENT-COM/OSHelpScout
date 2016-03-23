@@ -128,7 +128,7 @@ abstract class Helper
             if ($mailbox->getId() == $mailboxId) {
                 // Check if the user owns the conversation
                 $customer = $conversation->getCustomer();
-                if ($customer->getEmail() === $user->email) {
+                if ($customer->getId() === $customerId) {
                     static::filterThreadInConversation($conversation);
                     // Same user, so we can display the conversation
                     return $conversation;
