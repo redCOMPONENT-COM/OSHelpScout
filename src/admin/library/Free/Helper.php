@@ -129,6 +129,7 @@ abstract class Helper
                 // Check if the user owns the conversation
                 $customer = $conversation->getCustomer();
                 if ($customer->getEmail() === $user->email) {
+                    static::filterThreadInConversation($conversation);
                     // Same user, so we can display the conversation
                     return $conversation;
                 }
@@ -136,6 +137,28 @@ abstract class Helper
         }
 
         return false;
+    }
+
+    /**
+     * Filter the thread in the conversation to display only messages from
+     * the customer and staff members. Ignores notes and other type of
+     * messages.
+     *
+     * @param  HelpScout\Conversation  $conversation
+     */
+    protected static function filterThreadInConversation($conversation)
+    {
+        $thread         = $conversation->getThreads();
+        $validMsgType   = array('message', 'customer');
+        $filteredThread = array();
+
+        foreach ($thread as $msg) {
+            if (in_array($msg->getType(), $validMsgType)) {
+                $filteredThread[] = $msg;
+            }
+        }
+
+        $conversation->filteredThread = $filteredThread;
     }
 
     /**
