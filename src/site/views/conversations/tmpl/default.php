@@ -33,7 +33,7 @@ defined('_JEXEC') or die();
                         </td>
                         <td><?php echo $conversation->getModifiedAt(); ?></td>
                         <td>
-                            <div class="uk-badge <?php echo $conversation->getStatus() != 'closed' ? 'uk-badge-warning' : ''; ?>">
+                            <div class="uk-badge <?php echo $conversation->getStatus() != 'closed' ? 'uk-badge-warning' : 'uk-badge-success'; ?>">
                                 <?php echo JText::_($statusStr); ?>
                             </div>
                         </td>

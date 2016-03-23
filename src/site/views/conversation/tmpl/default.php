@@ -23,7 +23,7 @@ $conversationCount = count($threads);
         <div class="uk-width-1-1">
             <h2 class="oshs-conversation-subject">
                 <?php echo $this->conversation->getSubject(); ?>
-                <span class="uk-badge oshs-conversation-status <?php echo $status != 'closed' ? 'uk-badge-warning' : ''; ?>">
+                <span class="uk-badge oshs-conversation-status <?php echo $status != 'closed' ? 'uk-badge-warning' : 'uk-badge-success'; ?>">
                     <?php echo JText::_($statusStr); ?>
                 </span>
             </h2>
