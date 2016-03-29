@@ -14,10 +14,15 @@ use HelpScout;
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.helper');
+jimport('joomla.filesystem.folder');
+jimport('joomla.filesystem.file');
 
 
 abstract class Helper
 {
+    const UPLOAD_PREFIX_SESSION = 'oshs-uploads-';
+    const UPLOAD_PREFIX         = 'oshs-up-';
+
     static protected $apiInstance;
 
     /**
@@ -179,5 +184,54 @@ abstract class Helper
         }
 
         return strtoupper('COM_OSHELPSCOUT_STATUS_' . $status);
+    }
+
+    public static function getUploadSessionData($conversationId)
+    {
+        $session = Framework\Factory::getSession();
+        $key     = static::UPLOAD_PREFIX_SESSION . $conversationId;
+
+        return $session->get($key, array());
+    }
+
+    public static function setUploadSessionData($conversationId, $data)
+    {
+        $session = Framework\Factory::getSession();
+        $key     = static::UPLOAD_PREFIX_SESSION . $conversationId;
+
+        $session->set($key, $data);
+    }
+
+    public static function cleanUploadSessionData($conversationId)
+    {
+        $session = Framework\Factory::getSession();
+        $key     = static::UPLOAD_PREFIX_SESSION . $conversationId;
+
+        $session->set($key, array());
+    }
+
+    public static function getTmpUploadFolder()
+    {
+        return Framework\Factory::getApplication()->getCfg('tmp_path') . '/oshelpscout/';
+    }
+
+    public static function cleanUploadTmpFiles($conversationId)
+    {
+        // Cleanup tmp uploaded files
+        $tmpPath = static::getTmpUploadFolder();
+        $tmpFiles = \JFolder::files($tmpPath, static::UPLOAD_PREFIX . $conversationId . '-', true);
+
+        if (!empty($tmpFiles)) {
+            foreach ($tmpFiles as $file) {
+                \JFile::delete($tmpPath . $file);
+            }
+        }
+    }
+
+    public static function getUploadTmpFilename($conversationId)
+    {
+        $tmpPath = static::getTmpUploadFolder();
+
+        return tempnam($tmpPath, static::UPLOAD_PREFIX . $conversationId . '-');
     }
 }

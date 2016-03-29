@@ -21,7 +21,12 @@ else :
     $conversationIndex = 0;
     $conversationCount = count($threads);
     // $editor            = JEditor::getInstance(JFactory::getUser()->getParam("editor"));
+
+    JHtml::_('stylesheet', 'media/com_oshelpscout/css/dropzone.css');
+    JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
     ?>
+
+
     <h3>Conversation</h3>
 
     <?php if (!empty($this->conversation)) : ?>
@@ -36,18 +41,29 @@ else :
             </div>
 
             <div class="uk-width-1-1 oshs-conversation-reply">
-                <form class="uk-form" action="<?php echo JRoute::_('index.php?option=com_oshelpscout&task=conversation.reply'); ?>" method="POST">
+                <form class="uk-form" action="<?php echo JRoute::_('index.php?option=com_oshelpscout&task=conversation.reply'); ?>" method="POST" id="oshs-reply-form">
                     <div class="uk-form-row">
                         <?php //echo $editor->display('body', '', '550', '200', '60', '10', false); ?>
                         <textarea name="body" id="oshs-answer-body"></textarea>
-                    </div>
-                    <div class="uk-form-row">
-                        <button type="submit" class="uk-button"><?php echo JText::_('COM_OSHELPSCOUT_REPLY'); ?></button>
                     </div>
                     <input type="hidden" name="conversationId" value="<?php echo $this->conversation->getId(); ?>" />
                     <input type="hidden" name="itemId" value="<?php echo $this->itemId; ?>" />
                     <?php echo JHTML::_('form.token'); ?>
                 </form>
+
+                <div>
+                    <form action="<?php echo JRoute::_('index.php?option=com_oshelpscout&task=conversation.upload'); ?>" class="dropzone" id="helpscout-upload">
+                        <div class="fallback">
+                            <input name="file" type="file" multiple />
+                        </div>
+                        <input type="hidden" name="conversationId" value="<?php echo $this->conversationId; ?>" />
+                        <?php echo JHTML::_('form.token'); ?>
+                    </form>
+                </div>
+
+                <div>
+                    <button type="button" id="oshs-reply-button" class="uk-button"><?php echo JText::_('COM_OSHELPSCOUT_REPLY'); ?></button>
+                </div>
             </div>
 
             <?php foreach ($threads as $msg) : ?>
@@ -109,8 +125,77 @@ else :
             </div>
         </div>
         <pre>
-            <?php var_dump($this->conversation); ?>
+            <?php // var_dump($this->conversation); ?>
         </pre>
+
+        <script>
+            (function($, window, Dropzone) {
+                // Event listener for the reply button
+                $('#oshs-reply-button').on('click', function() {
+                    $('#oshs-reply-form').submit();
+                });
+
+                // Configure the upload manager
+                Dropzone.options.helpscoutUpload = {
+                    paramName: "file", // The name that will be used to transfer the file
+                    maxFilesize: 2, // MB
+                    uploadMultiple: true,
+                    autoProcessQueue: false,
+                    acceptedFiles: 'image/*,application/pdf,.psd,.zip,.tar,.gz,.bz2,.doc,.xml,.html,.txt,.docx,.xmlx',
+                    // accept: function(file, done) {
+                    //     done();
+                    // },
+                    // sending: function(file, xhr, formData) {
+                    //     formData.append("<?php echo JSession::getFormToken(); ?>", 1);
+                    // }
+                    complete: function(t) {
+                        $('#oshs-reply-form').submit();
+                    },
+                    init: function(t) {
+                        var dropzoneInstance = Dropzone.instances[0];
+
+                        function getQueuedFilesCount() {
+                            var queuedFiles = 0;
+
+                            for (var i = 0; i < dropzoneInstance.files.length; i++) {
+                                file = dropzoneInstance.files[i];
+
+                                if (file.status == 'queued') {
+                                    queuedFiles++;
+                                }
+                            }
+
+                            return queuedFiles;
+                        }
+
+                        // Only submit if there are no files to upload
+                        $('#oshs-reply-form').on('submit', function() {
+                            var canSubmit = false,
+                                queuedFiles;
+
+                            try {
+                                queuedFiles = getQueuedFilesCount();
+
+                                if (queuedFiles > 0) {
+                                    dropzoneInstance.processQueue();
+                                } else {
+                                    canSubmit = true;
+                                }
+                            }
+                            catch(err) {
+                                if (typeof(console) != 'undefined') {
+                                    console.log(err);
+                                }
+
+                                canSubmit = false;
+                            }
+
+                            return canSubmit;
+                        });
+                    }
+                };
+            })(jQuery, window, Dropzone);
+        </script>
 
     <?php else : ?>
         <?php echo JText::_('COM_OSHELPSCOUT_NOT_FOUND'); ?>

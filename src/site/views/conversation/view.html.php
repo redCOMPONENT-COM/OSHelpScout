@@ -20,12 +20,17 @@ class OSHelpScoutViewConversation extends JViewLegacy
         $itemId    = $app->input->get('Itemid');
         $mailboxId = OSHelpScout\Free\Helper::getCurrentMailboxId();
 
-        $this->conversation = null;
-        $this->itemId       = $itemId;
+        $this->conversation   = null;
+        $this->itemId         = $itemId;
+        $this->conversationId = $id;
 
         if (!empty($id)) {
             // Get the customer's conversation
             $this->conversation = OSHelpScout\Free\Helper::getConversation($id, $mailboxId);
+
+            // Make sure the tmp upload data is empty in the session
+            OSHelpScout\Free\Helper::cleanUploadSessionData($id);
+            OSHelpScout\Free\Helper::cleanUploadTmpFiles($id);
         }
 
         parent::display($tpl);
