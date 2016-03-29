@@ -124,9 +124,6 @@ else :
                 </a>
             </div>
         </div>
-        <pre>
-            <?php // var_dump($this->conversation); ?>
-        </pre>
 
         <script>
             (function($, window, Dropzone) {
