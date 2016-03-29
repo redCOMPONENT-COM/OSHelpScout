@@ -51,8 +51,8 @@ else :
                     <?php echo JHTML::_('form.token'); ?>
                 </form>
 
-                <div>
-                    <form action="<?php echo JRoute::_('index.php?option=com_oshelpscout&task=conversation.upload'); ?>" class="dropzone" id="helpscout-upload">
+                <div class="oshs-upload-box">
+                    <form action="<?php echo JRoute::_('index.php?option=com_oshelpscout&task=conversation.upload'); ?>" class="dropzone uk-form" id="helpscout-upload">
                         <div class="fallback">
                             <input name="file" type="file" multiple />
                         </div>
@@ -129,7 +129,12 @@ else :
             (function($, window, Dropzone) {
                 // Event listener for the reply button
                 $('#oshs-reply-button').on('click', function() {
-                    $('#oshs-reply-form').submit();
+                    var body = $('#oshs-answer-body').val();
+                    if (body.trim() != '') {
+                        $('#oshs-reply-form').submit();
+                    } else {
+                        // msg
+                    }
                 });
 
                 // Configure the upload manager
@@ -139,12 +144,6 @@ else :
                     uploadMultiple: true,
                     autoProcessQueue: false,
                     acceptedFiles: 'image/*,application/pdf,.psd,.zip,.tar,.gz,.bz2,.doc,.xml,.html,.txt,.docx,.xmlx',
-                    // accept: function(file, done) {
-                    //     done();
-                    // },
-                    // sending: function(file, xhr, formData) {
-                    //     formData.append("<?php echo JSession::getFormToken(); ?>", 1);
-                    // }
                     complete: function(t) {
                         $('#oshs-reply-form').submit();
                     },

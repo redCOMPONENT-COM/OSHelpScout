@@ -25,53 +25,57 @@ class OSHelpScoutControllerConversation extends JControllerLegacy
         $customerId = OSHelpScout\Free\Helper::getCurrentCustomerId();
 
         if (!empty($customerId)) {
-            $hs             = OSHelpScout\Free\Helper::getAPIInstance();
-            $app            = JFactory::getApplication();
-            $body           = $app->input->getHtml('body');
-            $conversationId = $app->input->get('conversationId');
-            $itemId         = $app->input->get('Itemid');
+            try {
+                $hs             = OSHelpScout\Free\Helper::getAPIInstance();
+                $app            = JFactory::getApplication();
+                $body           = $app->input->getHtml('body');
+                $conversationId = (int)$app->input->get('conversationId', 0);
+                $itemId         = (int)$app->input->get('Itemid', 0);
 
-            $createdBy = new HelpScout\model\ref\PersonRef();
-            $createdBy->setId($customerId);
-            $createdBy->setType("customer");
+                $createdBy = new HelpScout\model\ref\PersonRef();
+                $createdBy->setId($customerId);
+                $createdBy->setType("customer");
 
-            $thread = new HelpScout\model\thread\Customer();
-            $thread->setBody($body);
-            $thread->setCreatedBy($createdBy);
+                $thread = new HelpScout\model\thread\Customer();
+                $thread->setBody($body);
+                $thread->setCreatedBy($createdBy);
 
-            // Check if there are pending uploaded files to send to HelpScout
-            $currentUploads = OSHelpScout\Free\Helper::getUploadSessionData($conversationId);
+                // Check if there are pending uploaded files to send to HelpScout
+                $currentUploads = OSHelpScout\Free\Helper::getUploadSessionData($conversationId);
 
-            if (!empty($currentUploads)) {
-                $attachments = array();
+                if (!empty($currentUploads)) {
+                    $attachments = array();
 
-                foreach ($currentUploads as $file) {
-                    // Create the attachment uploading to HelpScout
-                    if (JFile::exists($file->tmpPath)) {
-                        $attachment = new Attachment;
-                        $attachment->setFileName($file->name);
-                        $attachment->setMimeType(mime_content_type($file->tmpPath));
-                        $attachment->setData(file_get_contents($file->tmpPath));
+                    foreach ($currentUploads as $file) {
+                        // Create the attachment uploading to HelpScout
+                        if (JFile::exists($file->tmpPath)) {
+                            $attachment = new Attachment;
+                            $attachment->setFileName($file->name);
+                            $attachment->setMimeType(mime_content_type($file->tmpPath));
+                            $attachment->setData(file_get_contents($file->tmpPath));
 
-                        $hs->createAttachment($attachment);
-                        $attachments[] = $attachment;
+                            $hs->createAttachment($attachment);
+                            $attachments[] = $attachment;
+                        }
+                    }
+
+                    // Link attachments to the thread
+                    if (!empty($attachments)) {
+                        $thread->setAttachments($attachments);
                     }
                 }
 
-                // Link attachments to the thread
-                if (!empty($attachments)) {
-                    $thread->setAttachments($attachments);
-                }
+                $hs->createThread($conversationId, $thread);
+
+                // Cleanup
+                OSHelpScout\Free\Helper::cleanUploadSessionData($conversationId);
+                OSHelpScout\Free\Helper::cleanUploadTmpFiles($conversationId);
+
+
+                $message = JText::_("COM_OSHELPSCOUT_REPLIED_SUCCESSFULLY");
+            } catch (Exception $e) {
+                $message = JText::_("COM_OSHELPSCOUT_ERROR_REPLYING");
             }
-
-            // Cleanup
-            OSHelpScout\Free\Helper::cleanUploadSessionData($conversationId);
-            OSHelpScout\Free\Helper::cleanUploadTmpFiles($conversationId);
-
-            $hs->createThread($conversationId, $thread);
-
-
-            $message = JText::_("COM_OSHELPSCOUT_REPLIED_SUCCESSFULLY");
         } else {
             $message = JText::_("COM_OSHELPSCOUT_ERROR_REPLYING");
         }
