@@ -18,11 +18,10 @@ JHtml::_('stylesheet', 'media/com_oshelpscout/css/dropzone.css');
 JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
 ?>
 
-
-<div class="uk-grid">
+<div class="uk-grid oshs-container">
     <div>
         <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversations'); ?>">
-            <?php echo JText::_('COM_OSHELPSCOUT_BACK_TO_LIST'); ?>
+            <i class="uk-icon-angle-double-left"></i>&nbsp;<?php echo JText::_('COM_OSHELPSCOUT_BACK_TO_LIST'); ?>
         </a>
     </div>
 
@@ -48,12 +47,12 @@ JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
         <form class="uk-form" action="<?php echo JRoute::_('index.php?option=com_oshelpscout&task=conversation.reply'); ?>" method="POST" id="oshs-reply-form">
             <?php if (empty($this->conversation)) : ?>
                 <div class="uk-form-row">
-                    <input type="text" name="subject" id="oshs-answer-subject" value="" placeholder="<?php echo JText::_('COM_OSHELPSCOUT_SUBJECT'); ?>" />
+                    <input type="text" name="subject" id="oshs-answer-subject" value="" placeholder="<?php echo JText::_('COM_OSHELPSCOUT_TYPE_SUBJECT'); ?>" />
                 </div>
             <?php endif; ?>
             <div class="uk-form-row">
                 <?php //echo $editor->display('body', '', '550', '200', '60', '10', false); ?>
-                <textarea name="body" id="oshs-answer-body" placeholder="<?php echo JText::_('COM_OSHELPSCOUT_MESSAGE'); ?>"></textarea>
+                <textarea name="body" id="oshs-answer-body" placeholder="<?php echo JText::_('COM_OSHELPSCOUT_TYPE_MESSAGE'); ?>"></textarea>
             </div>
             <input type="hidden" name="conversationId" value="<?php echo $this->conversationId; ?>" />
             <input type="hidden" name="itemId" value="<?php echo $this->itemId; ?>" />
@@ -90,54 +89,45 @@ JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
                 $attachments   = $msg->getAttachments();
             ?>
 
-            <div class="uk-width-1-1">
-                <div class="oshs-message-block oshs-message-by-<?php echo $createdByType; ?>">
-                    <div class="oshs-message-avatar">
-                        <img src="http://www.gravatar.com/avatar/<?php echo md5(strtolower(trim($createdBy->getEmail()))); ?>?size=80" width="40" />
-                    </div>
-
-                    <div class="oshs-message-head">
-                        <div class="oshs-message-date">
-                            <?php $date = new JDate($msg->getCreatedAt()); ?>
-                            <?php if ($conversationIndex === $conversationCount) : ?>
-                                <?php echo JText::_('COM_OSHELPSCOUT_CREATED_AT'); ?>:
-                            <?php else : ?>
-                                <?php echo JText::_('COM_OSHELPSCOUT_REPLIED_AT'); ?>:
-                            <?php endif; ?>
-                            <?php echo $date->format(JText::_('DATE_FORMAT_LC2')); ?>
-                        </div>
-
-                        <div class="oshs-message-by">
-                            <?php if ($createdByType == 'customer') : ?>
-                                <?php echo JText::_('COM_OSHELPSCOUT_BY'); ?>: <div class="uk-badge"><?php echo JText::_('COM_OSHELPSCOUT_YOU'); ?></div>
-                            <?php else : ?>
-                                <?php echo JText::_('COM_OSHELPSCOUT_BY'); ?>: <div class="uk-badge uk-badge-warning"><?php echo JText::_('COM_OSHELPSCOUT_STAFF'); ?></div>&nbsp;
-                                <?php echo $createdBy->getFirstName() . ' ' . $createdBy->getLastName(); ?>&nbsp;
-                            <?php endif; ?>
-                        </div>
-
-                    </div>
-
-                    <div class="oshs-message-body">
-                        <?php echo trim($msg->getBody()); ?>
-                    </div>
-
-                    <?php if (count($attachments) > 0) : ?>
-                        <div class="oshs-message-attachments">
-                            <i class="uk-icon-paperclip"></i>
-                            <?php foreach ($attachments as $file) : ?>
-                                <a href="<?php echo $file->getUrl(); ?>" target="_blank" class="oshs-message-attachment"><?php echo $file->getFileName(); ?></a>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php endif; ?>
+            <div class="uk-width-1-1 oshs-message-block oshs-message-by-<?php echo $createdByType; ?>">
+                <div class="oshs-message-avatar">
+                    <img src="http://www.gravatar.com/avatar/<?php echo md5(strtolower(trim($createdBy->getEmail()))); ?>?size=80" width="40" />
                 </div>
+
+                <div class="oshs-message-head">
+                    <div class="oshs-message-by">
+                        <?php echo $createdBy->getFirstName() . ' ' . $createdBy->getLastName(); ?>&nbsp;
+                        <?php if ($conversationIndex === $conversationCount) : ?>
+                            <span class="uk-text-muted"><?php echo JText::_('COM_OSHELPSCOUT_STARTED_CONVERSATION'); ?></span>
+                        <?php else : ?>
+                            <span class="uk-text-muted"><?php echo JText::_('COM_OSHELPSCOUT_REPLIED'); ?></span>
+                        <?php endif; ?>
+                    </div>
+                    <div class="oshs-message-date uk-text-muted">
+                        <?php $date = new JDate($msg->getCreatedAt()); ?>
+                        <?php echo $date->format(JText::_('DATE_FORMAT_LC2')); ?>
+                    </div>
+                </div>
+
+                <div class="oshs-message-body">
+                    <?php echo trim($msg->getBody()); ?>
+                </div>
+
+                <?php if (count($attachments) > 0) : ?>
+                    <div class="oshs-message-attachments">
+                        <i class="uk-icon-paperclip"></i>
+                        <?php foreach ($attachments as $file) : ?>
+                            <a href="<?php echo $file->getUrl(); ?>" target="_blank" class="oshs-message-attachment"><?php echo $file->getFileName(); ?></a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
 
     <div>
         <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversations'); ?>">
-            <?php echo JText::_('COM_OSHELPSCOUT_BACK_TO_LIST'); ?>
+            <i class="uk-icon-angle-double-left"></i>&nbsp;<?php echo JText::_('COM_OSHELPSCOUT_BACK_TO_LIST'); ?>
         </a>
     </div>
 </div>
