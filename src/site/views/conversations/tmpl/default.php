@@ -10,10 +10,8 @@ use Alledia\OSHelpScout;
 
 defined('_JEXEC') or die();
 ?>
+<h1><?php echo $this->title ?></h1>
 <div class="uk-grid oshs-container">
-    <div class="uk-width-1-1">
-        <h2><?php echo $this->title ?></h2>
-    </div>
 
     <?php $document = JFactory::getDocument();
     $renderer   = $document->loadRenderer('modules');
@@ -24,7 +22,7 @@ defined('_JEXEC') or die();
 
     <div class="uk-width-1-1">
         <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversation'); ?>" class="uk-button oshs-new-button">
-            <?php echo JText::_('COM_OSHELPSCOUT_NEW_CONVERSATION'); ?>
+            <i class="uk-icon-question-circle"></i> <?php echo JText::_('COM_OSHELPSCOUT_NEW_CONVERSATION'); ?>
         </a>
     </div>
 
@@ -65,7 +63,7 @@ defined('_JEXEC') or die();
             </table>
         </div>
     <?php else : ?>
-        <div class="uk-width-1-1">
+        <div class="uk-alert">
             <?php echo JText::_('COM_OSHELPSCOUT_NO_ITEMS'); ?>
         </div>
     <?php endif; ?>
