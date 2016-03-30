@@ -213,7 +213,13 @@ abstract class Helper
 
     public static function getTmpUploadFolder()
     {
-        return Framework\Factory::getApplication()->getCfg('tmp_path') . '/oshelpscout/';
+        $tmpPath = Framework\Factory::getApplication()->getCfg('tmp_path') . '/oshelpscout/';
+
+        if (!\JFolder::exists($tmpPath)) {
+            \JFolder::create($tmpPath);
+        }
+
+        return $tmpPath;
     }
 
     public static function cleanUploadTmpFiles($conversationId)

@@ -152,9 +152,6 @@ class OSHelpScoutControllerConversation extends JControllerLegacy
 
             // Create the tmp folder if not exists
             $tmpPath = OSHelpScout\Free\Helper::getTmpUploadFolder();
-            if (!JFolder::exists($tmpPath)) {
-                JFolder::create($tmpPath);
-            }
 
             // Get uploaded files from session
             $currentUploads = OSHelpScout\Free\Helper::getUploadSessionData($conversationId);
