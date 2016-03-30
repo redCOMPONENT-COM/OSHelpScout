@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 ?>
 <div class="uk-grid oshs-container">
     <div class="uk-width-1-1">
-        <h2>Conversations</h2>
+        <h2><?php echo $this->title ?></h2>
     </div>
 
     <?php $document = JFactory::getDocument();

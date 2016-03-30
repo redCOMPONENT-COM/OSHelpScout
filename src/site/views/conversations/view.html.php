@@ -15,10 +15,13 @@ class OSHelpScoutViewConversations extends JViewLegacy
 {
     public function display($tpl = null)
     {
+        $app       = Framework\Factory::getApplication();
         $hs        = OSHelpScout\Free\Helper::getAPIInstance();
         $mailboxId = OSHelpScout\Free\Helper::getCurrentMailboxId();
+        $title     = $app->getMenu()->getActive()->params->get('custom_title', 'COM_OSHELPSCOUT_CONVERSATIONS');
 
         $this->conversations = array();
+        $this->title         = JText::_($title);
 
         // Locate the customer by email
         $customerId = OSHelpScout\Free\Helper::getCurrentCustomerId();

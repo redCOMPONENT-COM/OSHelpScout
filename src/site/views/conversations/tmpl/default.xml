@@ -14,6 +14,12 @@
                     default=""
                     label="COM_OSHELPSCOUT_FIELD_HELPSCOUT_MAILBOX_LABEL"
                     description="COM_OSHELPSCOUT_FIELD_HELPSCOUT_MAILBOX_DESC" />
+
+                <field name="custom_title"
+                    type="text"
+                    default=""
+                    label="COM_OSHELPSCOUT_FIELD_CUSTOM_TITLE_LABEL"
+                    description="COM_OSHELPSCOUT_FIELD_CUSTOM_TITLE_DESC" />
             </fieldset>
         </fields>
     </fieldset>
