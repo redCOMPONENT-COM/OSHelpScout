@@ -7,7 +7,7 @@
  */
 
 use Alledia\OSHelpScout;
-use HelpScout\model\Attachment;
+use Alledia\Framework;
 
 defined('_JEXEC') or die();
 
@@ -22,19 +22,24 @@ class OSHelpScoutControllerConversation extends JControllerLegacy
     {
         JSession::checkToken('request') or jexit(JText::_('JINVALID_TOKEN'));
 
+        $user       = Framework\Factory::getUser();
         $customerId = OSHelpScout\Free\Helper::getCurrentCustomerId();
 
-        if (!empty($customerId)) {
+        if (!empty($customerId) || !$user->guest) {
             try {
                 $hs             = OSHelpScout\Free\Helper::getAPIInstance();
                 $app            = JFactory::getApplication();
                 $body           = $app->input->getHtml('body');
-                $conversationId = (int)$app->input->get('conversationId', 0);
-                $itemId         = (int)$app->input->get('Itemid', 0);
+                $conversationId = $app->input->get('conversationId', 0);
+                $itemId         = $app->input->get('Itemid', 0);
 
-                $createdBy = new HelpScout\model\ref\PersonRef();
-                $createdBy->setId($customerId);
-                $createdBy->setType("customer");
+                if (empty($customerId)) {
+                    $createdBy = new HelpScout\model\ref\PersonRef();
+                    $createdBy->setId($customerId);
+                    $createdBy->setType("customer");
+                } else {
+                    $createdBy = $hs->getCustomerRefProxy(null, $user->email);
+                }
 
                 $thread = new HelpScout\model\thread\Customer();
                 $thread->setBody($body);
@@ -43,13 +48,14 @@ class OSHelpScoutControllerConversation extends JControllerLegacy
                 // Check if there are pending uploaded files to send to HelpScout
                 $currentUploads = OSHelpScout\Free\Helper::getUploadSessionData($conversationId);
 
+                // var_dump($currentUploads); die;
                 if (!empty($currentUploads)) {
                     $attachments = array();
 
                     foreach ($currentUploads as $file) {
                         // Create the attachment uploading to HelpScout
                         if (JFile::exists($file->tmpPath)) {
-                            $attachment = new Attachment;
+                            $attachment = new HelpScout\model\Attachment;
                             $attachment->setFileName($file->name);
                             $attachment->setMimeType(mime_content_type($file->tmpPath));
                             $attachment->setData(file_get_contents($file->tmpPath));
@@ -65,12 +71,34 @@ class OSHelpScoutControllerConversation extends JControllerLegacy
                     }
                 }
 
-                $hs->createThread($conversationId, $thread);
+                if (OSHelpScout\Free\Helper::isNewId($conversationId)) {
+                    // New Conversation
+                    $subject     = $app->input->getString('subject', 'Contact');
+                    $user        = Framework\Factory::getUser();
+                    $mailbox     = $hs->getMailboxProxy(OSHelpScout\Free\Helper::getCurrentMailboxId());
+
+                    $conversation = new HelpScout\model\Conversation;
+                    $conversation->setType('email');
+                    $conversation->setSubject($subject);
+                    $conversation->setCustomer($createdBy);
+                    $conversation->setCreatedBy($createdBy);
+                    $conversation->setMailbox($mailbox);
+                    $conversation->addLineItem($thread);
+
+                    $hs->createConversation($conversation);
+                } else {
+                    // Reply
+                    $hs->createThread($conversationId, $thread);
+                }
 
                 // Cleanup
                 OSHelpScout\Free\Helper::cleanUploadSessionData($conversationId);
                 OSHelpScout\Free\Helper::cleanUploadTmpFiles($conversationId);
 
+                // If a conversation is defined is because we just created one. Use the new ID to redirect
+                if (isset($conversation)) {
+                    $conversationId = $conversation->getId();
+                }
 
                 $message = JText::_("COM_OSHELPSCOUT_REPLIED_SUCCESSFULLY");
             } catch (Exception $e) {

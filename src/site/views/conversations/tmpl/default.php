@@ -12,6 +12,12 @@ defined('_JEXEC') or die();
 ?>
 <h2>Conversations</h2>
 
+<div>
+    <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversation'); ?>" class="uk-button">
+        <?php echo JText::_('COM_OSHELPSCOUT_NEW_CONVERSATION'); ?>
+    </a>
+</div>
+
 <?php if (!empty($this->conversations)) : ?>
     <div class="uk-overflow-container">
         <table class="uk-table uk-table-striped">

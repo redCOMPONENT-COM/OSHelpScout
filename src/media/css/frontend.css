@@ -24,6 +24,10 @@
 
 }
 
+#oshs-answer-subject {
+    width: 100%;
+}
+
 .oshs-message-body {
     white-space: pre-line;
     padding: 10px;

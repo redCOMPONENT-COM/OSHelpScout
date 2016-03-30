@@ -22,6 +22,7 @@ abstract class Helper
 {
     const UPLOAD_PREFIX_SESSION = 'oshs-uploads-';
     const UPLOAD_PREFIX         = 'oshs-up-';
+    const ID_PREFIX_SESSION     = 'oshs-new-id-';
 
     static protected $apiInstance;
 
@@ -233,5 +234,31 @@ abstract class Helper
         $tmpPath = static::getTmpUploadFolder();
 
         return tempnam($tmpPath, static::UPLOAD_PREFIX . $conversationId . '-');
+    }
+
+    public static function isNewId($id)
+    {
+        return preg_match('/^new\-.*/', $id);
+    }
+
+    public static function getTmpConversationIdFromSession()
+    {
+        $session = Framework\Factory::getSession();
+
+        $id = $session->get(static::ID_PREFIX_SESSION, 0);
+
+        if (empty($id)) {
+            $id = uniqid('new-');
+            $session->set(static::ID_PREFIX_SESSION, $id);
+        }
+
+        return $id;
+    }
+
+    public static function cleanTmpConversationIdFromSession()
+    {
+        $session = Framework\Factory::getSession();
+
+        $session->set(static::ID_PREFIX_SESSION, null);
     }
 }
