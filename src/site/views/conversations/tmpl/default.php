@@ -63,7 +63,7 @@ defined('_JEXEC') or die();
             </table>
         </div>
     <?php else : ?>
-        <div class="uk-alert">
+        <div class="uk-width-1-1 uk-alert">
             <?php echo JText::_('COM_OSHELPSCOUT_NO_ITEMS'); ?>
         </div>
     <?php endif; ?>
