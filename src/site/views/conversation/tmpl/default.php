@@ -105,7 +105,7 @@ JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
                     </div>
                     <div class="oshs-message-date uk-text-muted">
                         <?php $date = new JDate($msg->getCreatedAt()); ?>
-                        <?php echo $date->format(JText::_('DATE_FORMAT_LC2')); ?>
+                        <?php echo $date->format(JText::_('COM_OSHELPSCOUT_DATE_FORMAT')); ?>
                     </div>
                 </div>
 
