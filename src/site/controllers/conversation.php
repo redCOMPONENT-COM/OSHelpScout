@@ -25,6 +25,7 @@ class OSHelpScoutControllerConversation extends JControllerLegacy
         $user       = Framework\Factory::getUser();
         $customerId = OSHelpScout\Free\Helper::getCurrentCustomerId();
 
+
         if (!empty($customerId) || !$user->guest) {
             try {
                 $hs             = OSHelpScout\Free\Helper::getAPIInstance();
@@ -33,7 +34,7 @@ class OSHelpScoutControllerConversation extends JControllerLegacy
                 $conversationId = $app->input->get('conversationId', 0);
                 $itemId         = $app->input->get('Itemid', 0);
 
-                if (empty($customerId)) {
+                if (!empty($customerId)) {
                     $createdBy = new HelpScout\model\ref\PersonRef();
                     $createdBy->setId($customerId);
                     $createdBy->setType("customer");
