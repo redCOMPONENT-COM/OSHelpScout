@@ -29,13 +29,13 @@ defined('_JEXEC') or die();
     </div>
 
     <?php if (!empty($this->conversations)) : ?>
-        <div class="uk-overflow-container">
+        <div class="uk-width-1-1 uk-overflow-container">
             <table class="uk-table uk-table-striped">
                 <thead>
                     <tr>
                         <th>Subject</th>
-                        <th>Messages</th>
-                        <th>Status</th>
+                        <th width="10%">Messages</th>
+                        <th width="10%">Status</th>
                     </tr>
                 </thead>
                 <tbody>
