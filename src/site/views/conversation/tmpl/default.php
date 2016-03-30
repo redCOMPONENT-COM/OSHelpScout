@@ -104,8 +104,16 @@ JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
                         <?php endif; ?>
                     </div>
                     <div class="oshs-message-date uk-text-muted">
-                        <?php $date = new JDate($msg->getCreatedAt()); ?>
-                        <?php echo $date->format(JText::_('COM_OSHELPSCOUT_DATE_FORMAT')); ?>
+                        <?php
+                        $timezone = JFactory::getUser()->getParam('timezone');
+                        if (empty($timezone)) {
+                            $timezone = JFactory::getConfig()->get('offset');
+                        }
+                        $timezone = new DateTimeZone($timezone);
+                        $date = new JDate($msg->getCreatedAt());
+                        $date->setTimezone($timezone);
+                        ?>
+                        <?php echo $date->format(JText::_('COM_OSHELPSCOUT_DATE_FORMAT'), true); ?>
                     </div>
                 </div>
 
