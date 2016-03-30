@@ -19,7 +19,6 @@ JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
 ?>
 
 
-<h3>Conversation</h3>
 <div class="uk-grid">
     <div>
         <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversations'); ?>">
@@ -28,6 +27,10 @@ JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
     </div>
 
     <div class="uk-width-1-1">
+        <?php if (!empty($this->conversation)) : ?>
+            <h3>Conversation</h3>
+        <?php endif; ?>
+
         <h2 class="oshs-conversation-subject">
             <?php if (!empty($this->conversation)) : ?>
                 <?php $statusStr = OSHelpScout\Free\Helper::getConversationStatusStr($this->conversation); ?>
