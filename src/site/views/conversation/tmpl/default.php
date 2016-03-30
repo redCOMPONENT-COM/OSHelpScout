@@ -53,7 +53,7 @@ JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
             <?php endif; ?>
             <div class="uk-form-row">
                 <?php //echo $editor->display('body', '', '550', '200', '60', '10', false); ?>
-                <textarea name="body" id="oshs-answer-body"></textarea>
+                <textarea name="body" id="oshs-answer-body" placeholder="<?php echo JText::_('COM_OSHELPSCOUT_MESSAGE'); ?>"></textarea>
             </div>
             <input type="hidden" name="conversationId" value="<?php echo $this->conversationId; ?>" />
             <input type="hidden" name="itemId" value="<?php echo $this->itemId; ?>" />
