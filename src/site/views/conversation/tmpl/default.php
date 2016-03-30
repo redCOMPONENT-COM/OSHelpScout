@@ -68,7 +68,7 @@ JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
         </div>
 
         <div>
-            <button type="button" id="oshs-reply-button" class="uk-button"><?php echo JText::_('COM_OSHELPSCOUT_SUBMIT'); ?></button>
+            <button type="button" id="oshs-reply-button" class="uk-button uk-button-primary"><?php echo JText::_('COM_OSHELPSCOUT_SUBMIT'); ?></button>
         </div>
     </div>
 
