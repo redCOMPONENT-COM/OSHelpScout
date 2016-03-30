@@ -22,48 +22,46 @@ defined('_JEXEC') or die();
     ?>
 
     <p>
-        <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversation'); ?>" class="uk-button oshs-new-button">
+        <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversation'); ?>" class="uk-button uk-button-primary oshs-new-button">
             <i class="uk-icon-question-circle"></i> <?php echo JText::_('COM_OSHELPSCOUT_NEW_CONVERSATION'); ?>
         </a>
     </p>
 
     <?php if (!empty($this->conversations)) : ?>
-        <div class="uk-grid">
-            <div class="uk-width-1-1 uk-overflow-container">
-                <table class="uk-table uk-table-striped">
-                    <thead>
+        <div class="uk-width-1-1 uk-overflow-container">
+            <table class="uk-table uk-table-striped">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th width="10%">Messages</th>
+                        <th width="10%">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->conversations as $conversation) : ?>
+                        <?php $statusStr = OSHelpScout\Free\Helper::getConversationStatusStr($conversation); ?>
                         <tr>
-                            <th>Subject</th>
-                            <th width="10%">Messages</th>
-                            <th width="10%">Status</th>
+                            <td>
+                                <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversation&id=' . $conversation->getId()); ?>">
+                                    <?php echo $conversation->getSubject(); ?>
+                                </a>
+                                <div class="oshs-preview-text">
+                                    <i class="uk-icon-angle-double-right"></i>
+                                    "<?php echo $conversation->getPreview(); ?>"
+                                </div>
+                            </td>
+                            <td class="uk-text-center">
+                                <span class="uk-badge uk-badge-notification"><?php echo $conversation->getThreadCount(); ?></span>
+                            </td>
+                            <td class="uk-text-center">
+                                <div class="uk-badge <?php echo $conversation->getStatus() != 'closed' ? 'uk-badge-warning' : 'uk-badge-success'; ?>">
+                                    <?php echo JText::_($statusStr); ?>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($this->conversations as $conversation) : ?>
-                            <?php $statusStr = OSHelpScout\Free\Helper::getConversationStatusStr($conversation); ?>
-                            <tr>
-                                <td>
-                                    <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversation&id=' . $conversation->getId()); ?>">
-                                        <?php echo $conversation->getSubject(); ?>
-                                    </a>
-                                    <div class="oshs-preview-text">
-                                        <i class="uk-icon-angle-double-right"></i>
-                                        "<?php echo $conversation->getPreview(); ?>"
-                                    </div>
-                                </td>
-                                <td class="uk-text-center">
-                                    <span class="uk-badge uk-badge-notification"><?php echo $conversation->getThreadCount(); ?></span>
-                                </td>
-                                <td class="uk-text-center">
-                                    <div class="uk-badge <?php echo $conversation->getStatus() != 'closed' ? 'uk-badge-warning' : 'uk-badge-success'; ?>">
-                                        <?php echo JText::_($statusStr); ?>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     <?php else : ?>
         <div class="uk-alert">

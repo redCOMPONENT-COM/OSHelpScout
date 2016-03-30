@@ -165,7 +165,6 @@
     padding: 1px;
 }
 
-
 .oshs-container .uk-button.oshs-new-button {
     margin: 23px 0;
 }
@@ -174,23 +173,27 @@
     color: #c0c0c0;
 }
 
-
 .oshs-message-by {
     font-size: 17px;
     font-weight: bold;
 }
 
-
-.uk-width-1-1.oshs-conversation-reply {
-    padding-top: 20px;
-    padding-right: 20px;
-    padding-bottom: 20px;
+.oshs-conversation-reply {
+    padding: 20px;
     background: #fafafa;
     border-bottom: 2px solid #f0f0f0;
-    padding-left: 20px !important;
-    margin-left: 15px;
 }
 
-.uk-width-1-1.oshs-message-block.oshs-message-by-user {
-    border-;
+.oshs-conversation-breadcrumbs {
+    padding: 20px;
+    background: #fafafa;
+}
+
+.oshs-container .uk-table {
+    border-top: 1px solid #ccc;
+}
+
+.oshs-container .uk-table th {
+    font-weight: 600;
+    color: #333;
 }

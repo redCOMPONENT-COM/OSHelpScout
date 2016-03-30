@@ -18,32 +18,30 @@ JHtml::_('stylesheet', 'media/com_oshelpscout/css/dropzone.css');
 JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
 ?>
 
-<div class="uk-grid oshs-container">
-    <div>
+<div class="oshs-container">
+    <div class="oshs-conversation-breadcrumbs">
         <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversations'); ?>">
             <i class="uk-icon-angle-double-left"></i>&nbsp;<?php echo JText::_('COM_OSHELPSCOUT_BACK_TO_LIST'); ?>
         </a>
     </div>
 
-    <div class="uk-width-1-1">
+    <?php if (!empty($this->conversation)) : ?>
+        <h4>Conversation</h4>
+    <?php endif; ?>
+
+    <h2 class="oshs-conversation-subject">
         <?php if (!empty($this->conversation)) : ?>
-            <h3>Conversation</h3>
+            <?php $statusStr = OSHelpScout\Free\Helper::getConversationStatusStr($this->conversation); ?>
+            <?php echo $this->conversation->getSubject(); ?>
+            <span class="uk-badge oshs-conversation-status <?php echo $status != 'closed' ? 'uk-badge-warning' : 'uk-badge-success'; ?>">
+                <?php echo JText::_($statusStr); ?>
+            </span>
+        <?php else : ?>
+            <?php echo JText::_('COM_OSHELPSCOUT_NEW_CONVERSATION'); ?>
         <?php endif; ?>
+    </h2>
 
-        <h2 class="oshs-conversation-subject">
-            <?php if (!empty($this->conversation)) : ?>
-                <?php $statusStr = OSHelpScout\Free\Helper::getConversationStatusStr($this->conversation); ?>
-                <?php echo $this->conversation->getSubject(); ?>
-                <span class="uk-badge oshs-conversation-status <?php echo $status != 'closed' ? 'uk-badge-warning' : 'uk-badge-success'; ?>">
-                    <?php echo JText::_($statusStr); ?>
-                </span>
-            <?php else : ?>
-                <?php echo JText::_('COM_OSHELPSCOUT_NEW_CONVERSATION'); ?>
-            <?php endif; ?>
-        </h2>
-    </div>
-
-    <div class="uk-width-1-1 oshs-conversation-reply">
+    <div class="oshs-conversation-reply">
         <form class="uk-form" action="<?php echo JRoute::_('index.php?option=com_oshelpscout&task=conversation.reply'); ?>" method="POST" id="oshs-reply-form">
             <?php if (empty($this->conversation)) : ?>
                 <div class="uk-form-row">
@@ -89,7 +87,7 @@ JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
                 $attachments   = $msg->getAttachments();
             ?>
 
-            <div class="uk-width-1-1 oshs-message-block oshs-message-by-<?php echo $createdByType; ?>">
+            <div class="oshs-message-block oshs-message-by-<?php echo $createdByType; ?>">
                 <div class="oshs-message-avatar">
                     <img src="http://www.gravatar.com/avatar/<?php echo md5(strtolower(trim($createdBy->getEmail()))); ?>?size=80" width="40" />
                 </div>
@@ -133,7 +131,7 @@ JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
         <?php endforeach; ?>
     <?php endif; ?>
 
-    <div>
+    <div class="oshs-conversation-breadcrumbs">
         <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversations'); ?>">
             <i class="uk-icon-angle-double-left"></i>&nbsp;<?php echo JText::_('COM_OSHELPSCOUT_BACK_TO_LIST'); ?>
         </a>
