@@ -36,6 +36,9 @@ defined('_JEXEC') or die();
                             <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversation&id=' . $conversation->getId()); ?>">
                                 <?php echo $conversation->getSubject(); ?>
                             </a>
+                            <div class="oshs-preview-text">
+                                "<?php echo $conversation->getPreview(); ?>"
+                            </div>
                         </td>
                         <td><?php echo $conversation->getThreadCount(); ?></td>
                         <td>

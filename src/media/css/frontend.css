@@ -24,6 +24,15 @@
 
 }
 
+.oshs-preview-text {
+    font-style: italic;
+    font-size: 12px;
+    margin-top: 5px;
+    margin-left: 5px;
+    color: #a0a0a0
+    max-width: 50%;
+}
+
 #oshs-answer-subject {
     width: 100%;
 }
