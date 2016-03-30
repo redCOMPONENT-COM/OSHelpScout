@@ -24,7 +24,7 @@ defined('_JEXEC') or die();
             <thead>
                 <tr>
                     <th>Subject</th>
-                    <th>Modified</th>
+                    <th>Messages</th>
                     <th>Status</th>
                 </tr>
             </thead>
@@ -37,7 +37,7 @@ defined('_JEXEC') or die();
                                 <?php echo $conversation->getSubject(); ?>
                             </a>
                         </td>
-                        <td><?php echo $conversation->getModifiedAt(); ?></td>
+                        <td><?php echo $conversation->getThreadCount(); ?></td>
                         <td>
                             <div class="uk-badge <?php echo $conversation->getStatus() != 'closed' ? 'uk-badge-warning' : 'uk-badge-success'; ?>">
                                 <?php echo JText::_($statusStr); ?>
