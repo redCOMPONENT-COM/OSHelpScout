@@ -15,6 +15,13 @@ defined('_JEXEC') or die();
         <h2>Conversations</h2>
     </div>
 
+    <?php $document = JFactory::getDocument();
+    $renderer   = $document->loadRenderer('modules');
+    $position   = 'oshelpscout-content-top';
+    $options   = array('style' => 'raw');
+    echo $renderer->render($position, $options, null);
+    ?>
+
     <div class="uk-width-1-1">
         <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversation'); ?>" class="uk-button oshs-new-button">
             <?php echo JText::_('COM_OSHELPSCOUT_NEW_CONVERSATION'); ?>
