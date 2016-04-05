@@ -190,7 +190,7 @@ abstract class Helper
             return array();
         }
 
-        preg_match_all('/^(?<title>[^#]+) *(?<tags>#[#a-z0-9\-\\\\_ ]+)?/im', $subjects, $matches);
+        preg_match_all('/^(?<title>[^#\n]+) *(?<tags>#[#a-z0-9\-\\\\_ ]+)?/im', $subjects, $matches);
 
         // Split tht title and tags
         $countTitles = count($matches['title']);
