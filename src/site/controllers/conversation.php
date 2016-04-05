@@ -88,9 +88,8 @@ class OSHelpScoutControllerConversation extends JControllerLegacy
 
                     // Default tags
                     $tags = OSHelpScout\Free\Helper::getTagsForSubject($subject);
-                    if (!empty($tags)) {
-                        $conversation->setTags($tags);
-                    }
+                    $tags[] = JText::_(COM_OSHELPSCOUT_VIA_OSHELPSCOUT_TAG);
+                    $conversation->setTags($tags);
 
                     $hs->createConversation($conversation);
                 } else {
