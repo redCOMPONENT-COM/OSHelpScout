@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+    <layout title="COM_OSHELPSCOUT_USERGROUP_HOOK_CALLBACK_TITLE">
+        <message>
+            <![CDATA[COM_OSHELPSCOUT_USERGROUP_HOOK_CALLBACK_DESC]]>
+        </message>
+    </layout>
+    <fieldset
+        addfieldpath="/administrator/components/com_oshelpscout/form/fields">
+        <fields name="params">
+            <fieldset name="basic" label="COM_OSHELPSCOUT_OPTIONS">
+                <field name="helpscout_app_secret"
+                    type="text"
+                    default=""
+                    label="COM_OSHELPSCOUT_FIELD_APP_SECRET_LABEL"
+                    description="COM_OSHELPSCOUT_FIELD_APP_SECRET_DESC" />
+            </fieldset>
+        </fields>
+    </fieldset>
+</metadata>

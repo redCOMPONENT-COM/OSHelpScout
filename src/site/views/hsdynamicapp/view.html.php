@@ -32,28 +32,11 @@ class OSHelpScoutViewHsdynamicapp extends JViewLegacy
             $emails     = $customer->getEmails();
 
             foreach ($emails as $email) {
-                $db = JFactory::getDbo();
-                // Look for an user id
-                $query = $db->getQuery(true)
-                    ->select('*')
-                    ->from('#__users')
-                    ->where('email = ' . $db->quote($email->getValue()));
-                $db->setQuery($query);
-                $userFromDB = $db->loadObject();
+                $user = OSHelpScout\Free\Helper::getUserByEmail($email->getValue());
 
-                // Get the user's data
-                if (is_object($userFromDB)) {
-                    $tmpUser = JFactory::getUser($userFromDB->id);
-
-                    if (!$tmpUser->guest && !empty($tmpUser->groups)) {
-                        $query = $db->getQuery(true)
-                            ->select('title')
-                            ->from('#__usergroups')
-                            ->where('id IN ("' . implode('","', $tmpUser->groups) . '")');
-                        $db->setQuery($query);
-                        $tmpUser->groups = $db->loadObjectList();
-
-                        $this->customers[] = $tmpUser;
+                if (is_object($user)) {
+                    if (!$user->guest && !empty($user->groups)) {
+                        $this->customers[] = $user;
                     }
                 }
             }

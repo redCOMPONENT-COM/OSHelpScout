@@ -1,7 +1,6 @@
 {
     "name"             : "Alledia/OSHelpScout",
     "description"      : "OSHelpScout",
-    "minimum-stability": "stable",
     "license"          : "GPL-2+",
     "type"             : "joomla.component",
     "extra"            : {
@@ -22,13 +21,15 @@
     },
     "repositories": [
         {
-            "url": "https://github.com/helpscout/helpscout-api-php.git",
+            "url": "https://github.com/ostraining/helpscout-api-php.git",
             "type": "git"
         }
     ],
     "require": {
         "php": ">= 5.3",
-        "helpscout/api": "*",
+        "ostraining/helpscout-api-php": ">=1.8.2",
         "helpscout/apps": "*"
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable" : true
 }

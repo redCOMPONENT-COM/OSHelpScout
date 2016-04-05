@@ -74,6 +74,37 @@ abstract class Helper
         return $customerId;
     }
 
+    public static function getUserByEmail($email)
+    {
+        $db = Framework\Factory::getDbo();
+
+        // Look for an user ID
+        $query = $db->getQuery(true)
+            ->select('id')
+            ->from('#__users')
+            ->where('email = ' . $db->quote($email));
+        $db->setQuery($query);
+
+        $userId = $db->loadResult();
+
+        if (!empty($userId)) {
+            $user = Framework\Factory::getUser($userId);
+
+            if (!$user->guest && !empty($user->groups)) {
+                $query = $db->getQuery(true)
+                    ->select('title')
+                    ->from('#__usergroups')
+                    ->where('id IN ("' . implode('","', $user->groups) . '")');
+                $db->setQuery($query);
+                $user->groups = $db->loadObjectList();
+
+                return $user;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Get the customer ID in HelpScout based on the current user.
      *

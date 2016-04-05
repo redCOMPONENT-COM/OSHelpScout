@@ -6,6 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname(dirname(dirname($vendorDir)));
 
 return array(
-    'HelpScout\\' => array($vendorDir . '/helpscout/api/src'),
+    'HelpScout\\' => array($vendorDir . '/ostraining/helpscout-api-php/src'),
     'HelpScoutApp\\' => array($vendorDir . '/helpscout/apps/src'),
 );

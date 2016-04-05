@@ -1,37 +1,5 @@
 [
     {
-        "name": "helpscout/api",
-        "version": "1.3.11",
-        "version_normalized": "1.3.11.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/helpscout/helpscout-api-php.git",
-            "reference": "45be7f9c623fb7854cc1215398c918544340df09"
-        },
-        "require": {
-            "ext-curl": "*",
-            "php": ">=5.3.2"
-        },
-        "time": "2014-12-03 13:38:38",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-0": {
-                "HelpScout\\": "src/"
-            }
-        },
-        "license": [
-            "MIT"
-        ],
-        "description": "API client for the Help Scout API",
-        "homepage": "http://www.helpscout.net",
-        "keywords": [
-            "api",
-            "api-client",
-            "helpscout"
-        ]
-    },
-    {
         "name": "helpscout/apps",
         "version": "1.1.0",
         "version_normalized": "1.1.0.0",
@@ -68,6 +36,83 @@
             "apps",
             "dynamic-app",
             "helpscout"
+        ]
+    },
+    {
+        "name": "ostraining/helpscout-api-php",
+        "version": "1.8.2",
+        "version_normalized": "1.8.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/ostraining/helpscout-api-php.git",
+            "reference": "56754a8f9dd416726e661af0501308f9149d096e"
+        },
+        "require": {
+            "ext-curl": "*",
+            "php": ">=5.3.2",
+            "shuber/curl": "master"
+        },
+        "require-dev": {
+            "codeclimate/php-test-reporter": "dev-master",
+            "phpunit/phpunit": "4.*"
+        },
+        "time": "2016-04-05 17:49:24",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "HelpScout\\": "src/"
+            }
+        },
+        "autoload-dev": {
+            "classmap": [
+                "tests/TestCase.php"
+            ]
+        },
+        "license": [
+            "MIT"
+        ],
+        "description": "API client for the Help Scout API",
+        "homepage": "http://www.helpscout.net",
+        "keywords": [
+            "api",
+            "api-client",
+            "helpscout"
+        ]
+    },
+    {
+        "name": "shuber/curl",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/hamstar/curl.git",
+            "reference": "6624992df201f9fd7262080117385dd09b0ecd2b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/hamstar/curl/zipball/6624992df201f9fd7262080117385dd09b0ecd2b",
+            "reference": "6624992df201f9fd7262080117385dd09b0ecd2b",
+            "shasum": ""
+        },
+        "time": "2013-11-23 01:44:31",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "files": [
+                "curl.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "description": "PHP Wrapper for Curl",
+        "keywords": [
+            "bot",
+            "curl",
+            "scraper",
+            "spider"
         ]
     }
 ]

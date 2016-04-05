@@ -87,7 +87,7 @@ class OSHelpScoutControllerConversation extends JControllerLegacy
                     $conversation->addLineItem($thread);
 
                     // Default tags
-                    $tags = OSHelpScout\Free\Helper::getTagsForSubject($subject);
+                    $tags   = OSHelpScout\Free\Helper::getTagsForSubject($subject);
                     $tags[] = JText::_(COM_OSHELPSCOUT_VIA_OSHELPSCOUT_TAG);
                     $conversation->setTags($tags);
 

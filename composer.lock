@@ -4,39 +4,9 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1545301def9b28963ce68258e711db4f",
-    "content-hash": "27336696181f45e7b32e5a664b0452fe",
+    "hash": "4f1868bd7fbed8e0b7cc1dfbb0ec1da7",
+    "content-hash": "f5f4034527c0d3677499b407fe30e984",
     "packages": [
-        {
-            "name": "helpscout/api",
-            "version": "1.3.11",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/helpscout/helpscout-api-php.git",
-                "reference": "45be7f9c623fb7854cc1215398c918544340df09"
-            },
-            "require": {
-                "ext-curl": "*",
-                "php": ">=5.3.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "HelpScout\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "API client for the Help Scout API",
-            "homepage": "http://www.helpscout.net",
-            "keywords": [
-                "api",
-                "api-client",
-                "helpscout"
-            ],
-            "time": "2014-12-03 13:38:38"
-        },
         {
             "name": "helpscout/apps",
             "version": "1.1.0",
@@ -73,13 +43,86 @@
                 "helpscout"
             ],
             "time": "2015-06-26 14:43:50"
+        },
+        {
+            "name": "ostraining/helpscout-api-php",
+            "version": "1.8.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ostraining/helpscout-api-php.git",
+                "reference": "56754a8f9dd416726e661af0501308f9149d096e"
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.2",
+                "shuber/curl": "master"
+            },
+            "require-dev": {
+                "codeclimate/php-test-reporter": "dev-master",
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "HelpScout\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "classmap": [
+                    "tests/TestCase.php"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "API client for the Help Scout API",
+            "homepage": "http://www.helpscout.net",
+            "keywords": [
+                "api",
+                "api-client",
+                "helpscout"
+            ],
+            "time": "2016-04-05 17:49:24"
+        },
+        {
+            "name": "shuber/curl",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hamstar/curl.git",
+                "reference": "6624992df201f9fd7262080117385dd09b0ecd2b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hamstar/curl/zipball/6624992df201f9fd7262080117385dd09b0ecd2b",
+                "reference": "6624992df201f9fd7262080117385dd09b0ecd2b",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "curl.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHP Wrapper for Curl",
+            "keywords": [
+                "bot",
+                "curl",
+                "scraper",
+                "spider"
+            ],
+            "time": "2013-11-23 01:44:31"
         }
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": [],
-    "prefer-stable": false,
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">= 5.3"
