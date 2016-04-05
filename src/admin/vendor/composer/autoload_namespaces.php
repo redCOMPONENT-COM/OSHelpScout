@@ -7,4 +7,5 @@ $baseDir = dirname(dirname(dirname($vendorDir)));
 
 return array(
     'HelpScout\\' => array($vendorDir . '/helpscout/api/src'),
+    'HelpScoutApp\\' => array($vendorDir . '/helpscout/apps/src'),
 );

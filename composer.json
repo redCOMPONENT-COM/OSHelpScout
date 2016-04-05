@@ -28,6 +28,7 @@
     ],
     "require": {
         "php": ">= 5.3",
-        "helpscout/api": "*"
+        "helpscout/api": "*",
+        "helpscout/apps": "*"
     }
 }

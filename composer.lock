@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ba012cd10bf6f44ddacb1d290984e9a6",
-    "content-hash": "d33befd1452c4f9f646bf28c486b9d7d",
+    "hash": "1545301def9b28963ce68258e711db4f",
+    "content-hash": "27336696181f45e7b32e5a664b0452fe",
     "packages": [
         {
             "name": "helpscout/api",
@@ -36,6 +36,43 @@
                 "helpscout"
             ],
             "time": "2014-12-03 13:38:38"
+        },
+        {
+            "name": "helpscout/apps",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/helpscout/helpscout-apps-php.git",
+                "reference": "0e18ec0aaff18b10da6c7b851787f8413d3a0e7c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/helpscout/helpscout-apps-php/zipball/0e18ec0aaff18b10da6c7b851787f8413d3a0e7c",
+                "reference": "0e18ec0aaff18b10da6c7b851787f8413d3a0e7c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "HelpScoutApp\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Client library to assist with building dynamic apps that integrate with the Help Scout UI",
+            "homepage": "http://www.helpscout.net",
+            "keywords": [
+                "apps",
+                "dynamic-app",
+                "helpscout"
+            ],
+            "time": "2015-06-26 14:43:50"
         }
     ],
     "packages-dev": [],
