@@ -17,6 +17,7 @@ class OSHelpScoutViewConversation extends JViewLegacy
     {
         $app       = Framework\Factory::getApplication();
         $mailboxId = OSHelpScout\Free\Helper::getCurrentMailboxId();
+        $params    = OSHelpScout\Free\Helper::getMenuParams();
 
         $this->itemId         = $app->input->get('Itemid', 0);
         $this->conversationId = $app->input->get('id', 0);
@@ -35,6 +36,9 @@ class OSHelpScoutViewConversation extends JViewLegacy
         // Make sure the tmp upload data is empty in the session
         OSHelpScout\Free\Helper::cleanUploadSessionData($this->conversationId);
         OSHelpScout\Free\Helper::cleanUploadTmpFiles($this->conversationId);
+
+        // Get the list of subjects to display
+        $this->subjects = OSHelpScout\Free\Helper::getSubjectsList();
 
         parent::display($tpl);
     }

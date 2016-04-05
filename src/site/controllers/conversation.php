@@ -22,17 +22,17 @@ class OSHelpScoutControllerConversation extends JControllerLegacy
     {
         JSession::checkToken('request') or jexit(JText::_('JINVALID_TOKEN'));
 
+        $app        = JFactory::getApplication();
         $user       = Framework\Factory::getUser();
         $customerId = OSHelpScout\Free\Helper::getCurrentCustomerId();
+        $itemId     = $app->input->get('Itemid', 0);
 
 
         if (!empty($customerId) || !$user->guest) {
             try {
                 $hs             = OSHelpScout\Free\Helper::getAPIInstance();
-                $app            = JFactory::getApplication();
                 $body           = $app->input->getHtml('body');
                 $conversationId = $app->input->get('conversationId', 0);
-                $itemId         = $app->input->get('Itemid', 0);
 
                 if (!empty($customerId)) {
                     $createdBy = new HelpScout\model\ref\PersonRef();
@@ -85,6 +85,12 @@ class OSHelpScoutControllerConversation extends JControllerLegacy
                     $conversation->setCreatedBy($createdBy);
                     $conversation->setMailbox($mailbox);
                     $conversation->addLineItem($thread);
+
+                    // Default tags
+                    $tags = OSHelpScout\Free\Helper::getTagsForSubject($subject);
+                    if (!empty($tags)) {
+                        $conversation->setTags($tags);
+                    }
 
                     $hs->createConversation($conversation);
                 } else {

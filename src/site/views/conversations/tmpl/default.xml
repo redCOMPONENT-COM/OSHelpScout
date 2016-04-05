@@ -20,6 +20,14 @@
                     default=""
                     label="COM_OSHELPSCOUT_FIELD_CUSTOM_TITLE_LABEL"
                     description="COM_OSHELPSCOUT_FIELD_CUSTOM_TITLE_DESC" />
+
+                <field name="subjects"
+                    type="textarea"
+                    default=""
+                    rows="10"
+                    cols="100"
+                    label="COM_OSHELPSCOUT_FIELD_SUBJECTS_LABEL"
+                    description="COM_OSHELPSCOUT_FIELD_SUBJECTS_DESC" />
             </fieldset>
         </fields>
     </fieldset>

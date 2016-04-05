@@ -45,7 +45,15 @@ JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
         <form class="uk-form" action="<?php echo JRoute::_('index.php?option=com_oshelpscout&task=conversation.reply'); ?>" method="POST" id="oshs-reply-form">
             <?php if (empty($this->conversation)) : ?>
                 <div class="uk-form-row">
-                    <input type="text" name="subject" id="oshs-answer-subject" value="" placeholder="<?php echo JText::_('COM_OSHELPSCOUT_TYPE_SUBJECT'); ?>" />
+                    <?php if (empty($this->subjects)) : ?>
+                        <input type="text" name="subject" id="oshs-answer-subject" value="" placeholder="<?php echo JText::_('COM_OSHELPSCOUT_TYPE_SUBJECT'); ?>" />
+                    <?php else : ?>
+                        <select name="subject" id="oshs-answer-subject">
+                            <?php foreach ($this->subjects as $subject) : ?>
+                                <option value="<?php echo $subject; ?>"><?php echo $subject; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
             <div class="uk-form-row">

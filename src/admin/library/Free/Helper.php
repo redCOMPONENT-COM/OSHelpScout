@@ -91,20 +91,96 @@ abstract class Helper
     }
 
     /**
+     * Get the current menu's params.
+     *
+     * @return JRegistry
+     */
+    public static function getMenuParams()
+    {
+        $app = Framework\Factory::getApplication();
+
+        return $app->getMenu()->getActive()->params;
+    }
+
+    /**
      * Get Mailbox Id for the current menu. Returns false, if not found.
      *
      * @return int
      */
     public static function getCurrentMailboxId()
     {
-        $app       = Framework\Factory::getApplication();
-        $mailboxId = $app->getMenu()->getActive()->params->get('helpscout_mailbox');
+        $mailboxId = static::getMenuParams()->get('helpscout_mailbox');
 
         if (empty($mailboxId)) {
             return false;
         }
 
         return $mailboxId;
+    }
+
+    /**
+     * Get a list of subjects to display in the new conversation form
+     *
+     * @return array
+     */
+    public static function getSubjectsList()
+    {
+        $subjects = static::getMenuParams()->get('subjects');
+
+        if (empty($subjects)) {
+            return array();
+        }
+
+        $subjects = explode("\n", $subjects);
+        $list     = array();
+
+        foreach ($subjects as $subject) {
+            if (substr_count($subject, '#')) {
+                $subject = trim(substr($subject, 0, strpos($subject, '#')));
+            }
+
+            $list[] = $subject;
+        }
+
+        return $list;
+    }
+
+    /**
+     * Get a list of tags for the given subject
+     *
+     * @param $subject  string  The subject
+     * @return array
+     */
+    public static function getTagsForSubject($subject)
+    {
+        $subjects = static::getMenuParams()->get('subjects');
+
+        if (empty($subjects)) {
+            return array();
+        }
+
+        preg_match_all('/^(?<title>[^#]+) *(?<tags>#[#a-z0-9\-\\\\_ ]+)?/im', $subjects, $matches);
+
+        // Split tht title and tags
+        $countTitles = count($matches['title']);
+        for ($i = 0; $i < $countTitles; $i++) {
+            $title = trim($matches['title'][$i]);
+
+            if ($title === $subject) {
+                // Process the tags string
+                $tags = $matches['tags'][$i];
+                $tags = str_replace('#', '', $tags);
+                $tags = explode(' ', $tags);
+
+                $convertSpace = function ($value) {
+                    return str_replace('\s', ' ', $value);
+                };
+
+                return array_map($convertSpace, $tags);
+            }
+        }
+
+        return array();
     }
 
     /**
@@ -121,7 +197,6 @@ abstract class Helper
     public static function getConversation($conversationId, $mailboxId = null)
     {
         $hs   = static::getAPIInstance();
-        $user = Framework\Factory::getUser();
 
         // Validate the current user as customer
         $customerId = static::getCurrentCustomerId();
