@@ -97,7 +97,7 @@ JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
 
             <div class="oshs-message-block oshs-message-by-<?php echo $createdByType; ?>">
                 <div class="oshs-message-avatar">
-                    <img src="http://www.gravatar.com/avatar/<?php echo md5(strtolower(trim($createdBy->getEmail()))); ?>?size=80" width="40" />
+                    <img src="//www.gravatar.com/avatar/<?php echo md5(strtolower(trim($createdBy->getEmail()))); ?>?size=80" width="40" />
                 </div>
 
                 <div class="oshs-message-head">
