@@ -24,7 +24,7 @@ class OSHelpScoutViewHsusergrouphook extends JViewLegacy
         $hs        = OSHelpScout\Free\Helper::getAPIInstance();
         $hook      = new HelpScout\Webhook($secretKey);
 
-        if ($hook->isValid() || 1) {
+        if ($hook->isValid()) {
             $customer     = $hook->getCustomer();
             $conversation = $hook->getConversation();
             $tags         = $conversation->getTags();
