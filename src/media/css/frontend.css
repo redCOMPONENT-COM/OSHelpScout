@@ -37,10 +37,13 @@
 }
 
 .oshs-message-body {
-    white-space: pre-line;
     margin-left: 55px;
     margin-top: 10px;
     margin-bottom: 20px;
+}
+
+.oshs-message-body.oshs-message-txt {
+    white-space: pre-line;
 }
 
 .oshs-message-by-customer {

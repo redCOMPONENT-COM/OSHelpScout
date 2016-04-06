@@ -123,8 +123,12 @@ JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
                     </div>
                 </div>
 
-                <div class="oshs-message-body">
-                    <?php echo trim($msg->getBody()); ?>
+                <?php
+                $body = trim($msg->getBody());
+                $htmlBody = $body != strip_tags($body);
+                ?>
+                <div class="oshs-message-body <?php echo $htmlBody ? 'oshs-message-html' : 'oshs-message-txt'; ?>">
+                    <?php echo $body; ?>
                 </div>
 
                 <?php if (count($attachments) > 0) : ?>
