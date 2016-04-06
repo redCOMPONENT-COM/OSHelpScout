@@ -34,7 +34,7 @@ JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
         <?php if (!empty($this->conversation)) : ?>
             <?php $statusStr = OSHelpScout\Free\Helper::getConversationStatusStr($this->conversation); ?>
             <?php echo $this->conversation->getSubject(); ?>
-            <span class="uk-badge oshs-conversation-status <?php echo $status != 'closed' ? 'uk-badge-warning' : 'uk-badge-success'; ?>">
+            <span class="uk-badge oshs-conversation-status <?php echo $this->conversation->getStatus() != 'closed' ? 'uk-badge-warning' : 'uk-badge-success'; ?>">
                 <?php echo JText::_($statusStr); ?>
             </span>
         <?php else : ?>
