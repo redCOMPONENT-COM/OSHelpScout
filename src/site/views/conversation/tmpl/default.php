@@ -7,6 +7,7 @@
  */
 
 use Alledia\OSHelpScout;
+use Carbon\Carbon;
 
 defined('_JEXEC') or die();
 
@@ -115,11 +116,13 @@ JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
                         if (empty($timezone)) {
                             $timezone = JFactory::getConfig()->get('offset');
                         }
-                        $timezone = new DateTimeZone($timezone);
-                        $date = new JDate($msg->getCreatedAt());
-                        $date->setTimezone($timezone);
+                        $date = Carbon::parse($msg->getCreatedAt());
+                        $date->timezone = new DateTimeZone($timezone);
                         ?>
-                        <?php echo $date->format(JText::_('COM_OSHELPSCOUT_DATE_FORMAT'), true); ?>
+                        <span data-uk-tooltip="{pos:'top'}it
+                        " title="<?php echo $date->format(JText::_('COM_OSHELPSCOUT_DATE_FORMAT')); ?>">
+                            <?php echo $date->diffForHumans(); ?>
+                        </span>
                     </div>
                 </div>
 

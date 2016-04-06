@@ -28,7 +28,8 @@
     "require": {
         "php": ">= 5.3",
         "ostraining/helpscout-api-php": ">=1.8.2",
-        "helpscout/apps": "*"
+        "helpscout/apps": "*",
+        "nesbot/carbon": "^1.21"
     },
     "minimum-stability": "dev",
     "prefer-stable" : true
