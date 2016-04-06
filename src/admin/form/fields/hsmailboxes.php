@@ -22,7 +22,7 @@ class JFormFieldHSMailBoxes extends JFormFieldList
     protected function getOptions()
     {
         // Initialize variables.
-        $options = array();
+        $options = parent::getOptions();
 
         $hs = OSHelpScout\Free\Helper::getAPIInstance();
         $mailboxes = $hs->getMailboxes()->getItems();
