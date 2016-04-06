@@ -49,7 +49,6 @@ class OSHelpScoutControllerConversation extends JControllerLegacy
                 // Check if there are pending uploaded files to send to HelpScout
                 $currentUploads = OSHelpScout\Free\Helper::getUploadSessionData($conversationId);
 
-                // var_dump($currentUploads); die;
                 if (!empty($currentUploads)) {
                     $attachments = array();
 
