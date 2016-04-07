@@ -278,14 +278,12 @@ abstract class Helper
      * display: closed, as a status, since the ticket can be closed but
      * not resolved yet.
      *
-     * @param  HelpScout\Conversation  $conversation  The conversation instance
+     * @param  string   $status  The conversation status
      *
      * @return  string  The converted status
      */
-    public static function getConversationStatusStr($conversation)
+    public static function getConversationStatusStr($status)
     {
-        $status = $conversation->getStatus();
-
         if ($status === 'closed') {
             $status = 'replied';
         }

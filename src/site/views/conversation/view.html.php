@@ -22,6 +22,7 @@ class OSHelpScoutViewConversation extends JViewLegacy
         $this->itemId         = $app->input->get('Itemid', 0);
         $this->conversationId = $app->input->get('id', 0);
         $this->conversation   = null;
+        $this->statusLabel    = null;
 
         if (empty($this->conversationId)) {
             // Try to recover a temporary ID from the session
@@ -31,6 +32,9 @@ class OSHelpScoutViewConversation extends JViewLegacy
         if (!OSHelpScout\Free\Helper::isNewId($this->conversationId)) {
             // Get the customer's conversation
             $this->conversation = OSHelpScout\Free\Helper::getConversation($this->conversationId, $mailboxId);
+            $this->statusLabel  = JText::_(
+                OSHelpScout\Free\Helper::getConversationStatusStr($this->conversation->getStatus())
+            );
         }
 
         // Make sure the tmp upload data is empty in the session

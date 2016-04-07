@@ -15,26 +15,17 @@ class OSHelpScoutViewConversations extends JViewLegacy
 {
     public function display($tpl = null)
     {
-        $app       = Framework\Factory::getApplication();
-        $hs        = OSHelpScout\Free\Helper::getAPIInstance();
-        $mailboxId = OSHelpScout\Free\Helper::getCurrentMailboxId();
-        $title     = $app->getMenu()->getActive()->params->get('custom_title', 'COM_OSHELPSCOUT_CONVERSATIONS');
+        $app          = Framework\Factory::getApplication();
+        $doc          = Framework\Factory::getDocument();
+        $menu         = $app->getMenu()->getActive();
+        $title        = $menu->params->get('custom_title', 'COM_OSHELPSCOUT_CONVERSATIONS');
+        $this->title  = JText::_($title);
+        $this->itemId = $app->input->get('Itemid', 0);
 
-        $this->conversations = array();
-        $this->title         = JText::_($title);
-
-        // Locate the customer by email
-        $customerId = OSHelpScout\Free\Helper::getCurrentCustomerId();
-        if (!empty($customerId)) {
-            // Get the customer conversations
-            $conversationsResult = $hs->getConversationsForCustomerByMailbox(
-                $mailboxId,
-                $customerId
-            );
-            // @todo: implement pagination
-
-            $this->conversations = $conversationsResult->getItems();
-        }
+        // Render the modules for oshelpscout-content-top position
+        $renderer = $doc->loadRenderer('modules');
+        $options  = array('style' => 'raw');
+        $this->modulesContentTop = $renderer->render('oshelpscout-content-top', $options, null);
 
         parent::display($tpl);
     }
