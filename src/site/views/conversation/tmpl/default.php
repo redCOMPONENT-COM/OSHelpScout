@@ -11,10 +11,6 @@ use Carbon\Carbon;
 
 defined('_JEXEC') or die();
 
-// jimport('joomla.html.editor');
-
-// $editor            = JEditor::getInstance(JFactory::getUser()->getParam("editor"));
-
 JHtml::_('stylesheet', 'media/com_oshelpscout/css/dropzone.css');
 JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
 ?>
@@ -57,7 +53,6 @@ JHtml::_('script', 'media/com_oshelpscout/js/dropzone.js');
                 </div>
             <?php endif; ?>
             <div class="uk-form-row">
-                <?php //echo $editor->display('body', '', '550', '200', '60', '10', false); ?>
                 <textarea name="body" id="oshs-answer-body" placeholder="<?php echo JText::_('COM_OSHELPSCOUT_TYPE_MESSAGE'); ?>"></textarea>
             </div>
             <input type="hidden" name="conversationId" value="<?php echo $this->conversationId; ?>" />
