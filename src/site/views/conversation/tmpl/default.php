@@ -41,7 +41,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
 
 <!-- Conversation UI template -->
 <script id="conversation-template" type="text/ractive">
-    <div class="uk-width-1-1 uk-overflow-container">
+    <div class="uk-width-1-1">
         {{^isNewConversation}}
             <h4>Conversation</h4>
         {{/isNewConversation}}
@@ -112,11 +112,11 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                 <button
                     type="button"
                     on-click="reply"
-                    {{#isSubmitting}}disabled{{/isSubmitting}}
+                    {{#startedSubmission}}disabled{{/startedSubmission}}
                     id="oshs-reply-button"
                     class="uk-button uk-button-primary">
 
-                    {{#if isSubmitting}}
+                    {{#if startedSubmission}}
                         <?php echo JText::_('COM_OSHELPSCOUT_PLEASE_WAIT'); ?>
                     {{else}}
                         <?php echo JText::_('COM_OSHELPSCOUT_SUBMIT'); ?>
@@ -262,6 +262,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
             'threadCount'            : null,
             'isLoading'              : false,
             'isSubmitting'           : false,
+            'startedSubmission'      : false,
             'foundError'             : false,
             'successRefreshInterval' : 300, // 5 min
             'errorRefreshInterval'   : 10, // 10 s
@@ -271,6 +272,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
             'submissionError'        : false,
             'submissionSuccess'      : null,
             'dropzone'               : null,
+            'isUploadingFiles'       : false,
             /*
              * Method to format the countdown remaining time in a time format:
              * 0:00
@@ -434,95 +436,129 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
             });
         },
         /*
+         * Method that check if the form has valid data
+         *
+         * @result {Boolean}
+         */
+        validateForm: function validateFormMethod() {
+            var body = this.get('replyBody'),
+                valid = body.trim() != '';
+
+            if (!valid) {
+                self.set('submissionError', '<?php echo JText::_('COM_OSHELPSCOUT_MSG_TYPE_MESSAGE'); ?>');
+
+                self.set('startedSubmission', false);
+            }
+
+            return valid;
+        },
+        /*
          * Method triggered to reply the conversation. Should only be called
          * if all files were already uploaded.
          */
         reply: function replyMethod() {
-            self.set('submissionError', false);
+            /*
+             * Method to set flags to say the submission has finished,
+             * if successful or fail
+             */
+            function setSubmissionAsFinished() {
+                self.set('isSubmitting', false);
+                self.set('startedSubmission', false);
 
-            // Check if the body of the message is empty
-            var body = this.get('replyBody');
-            if (body.trim() != '') {
-                // Marking submission as started
-                self.set('isSubmitting', true);
-
-                $.ajax({
-                    type    : 'POST',
-                    url     : '<?php echo JRoute::_('index.php?option=com_oshelpscout&task=conversation.reply&format=json'); ?>',
-                    data    : {
-                        'body': body,
-                        '<?php echo JSession::getFormToken(); ?>': 1,
-                        'subject': self.get('subject'),
-                        'conversationId': self.get('conversationId'),
-                        'itemId': self.get('itemId')
-                    },
-                    dataType: 'json'
-                }).success(
+                // Add timeout to hide form messages
+                setTimeout(
                     /*
-                     * Success callback
-                     *
-                     * @param {Object} data
+                     * Hide success and fail messages
                      */
-                    function replySuccessCallback(data) {
-                        if (data.success) {
-                            self.set('conversationId', data.conversationId);
+                    function hideMessagesTimeout() {
+                        self.set('submissionError', false);
+                        self.set('submissionSuccess', false);
+                    },
+                    6000
+                );
+            };
 
-                            if (self.get('isNewConversation'))  {
-                                var newUrl = '<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversation'); ?>&id=' + data.conversationId,
-                                    supportPushState = (typeof window.history != 'undefined')
-                                    && (typeof window.history.pushState != 'undefined');
+            // Avoid to submit twice
+            if (!self.get('isSubmitting')) {
+                // Check if the form is valid before reply
+                if (self.validateForm()) {
+                    self.set('submissionError', false);
 
-                                // If is new conversation, we need to update the window url to insert the new id
-                                if (supportPushState) {
-                                    window.history.pushState(null, window.document.title, newUrl);
-                                } else {
-                                    // Fallback for older browsers, redirecting
-                                    window.location = newUrl + '&msg=1';
+                    // Marking submission as started
+                    self.set('isSubmitting', true);
+
+                    // Make the request
+                    $.ajax(
+                        {
+                            type    : 'POST',
+                            url     : '<?php echo JRoute::_('index.php?option=com_oshelpscout&task=conversation.reply&format=json'); ?>',
+                            data    : {
+                                'body': self.get('replyBody'),
+                                '<?php echo JSession::getFormToken(); ?>': 1,
+                                'subject': self.get('subject'),
+                                'conversationId': self.get('conversationId'),
+                                'itemId': self.get('itemId')
+                            },
+                            dataType: 'json'
+                        }
+                    ).success(
+                        /*
+                         * Success callback
+                         *
+                         * @param {Object} data
+                         */
+                        function replySuccessCallback(data) {
+                            if (data.success) {
+                                self.set('conversationId', data.conversationId);
+
+                                if (self.get('isNewConversation'))  {
+                                    var newUrl = '<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversation'); ?>&id=' + data.conversationId,
+                                        supportPushState = (typeof window.history != 'undefined')
+                                        && (typeof window.history.pushState != 'undefined');
+
+                                    // If is new conversation, we need to update the window url to insert the new id
+                                    if (supportPushState) {
+                                        window.history.pushState(null, window.document.title, newUrl);
+                                    } else {
+                                        // Fallback for older browsers, redirecting
+                                        window.location = newUrl + '&msg=1';
+                                    }
+
+                                    self.set('isNewConversation', false);
                                 }
 
-                                self.set('isNewConversation', false);
+                                // Files were already uploaded. Remove all
+                                var dropzone = self.get('dropzone');
+                                dropzone.removeAllFiles();
+
+                                if (!self.get('isNewConversation')) {
+                                    // If is not a new conversation, reload the thread
+                                    self.set('replyBody', '');
+                                    self.set('isLoading', true);
+                                    self.set('submissionSuccess', data.message);
+                                    self.set('isNewConversation', false);
+                                    self.load();
+                                }
+                            } else {
+                                self.set('submissionError', data.message);
                             }
 
-                            if (!self.get('isNewConversation')) {
-                                // If is not a new conversation, reload the thread
-                                self.set('replyBody', '');
-                                self.set('isLoading', true);
-                                self.set('submissionSuccess', data.message);
-                                self.set('isNewConversation', false);
-                                self.load();
-                            }
-                        } else {
-                            self.set('submissionError', data.message);
+                            setSubmissionAsFinished();
                         }
-                    }
-                ).fail(
-                    /*
-                     * Fail callback
-                     */
-                    function replyFailCallback() {
-                        self.set('submissionError', 'Sorry, your message coudn\'t be sent');
-                    }
-                ).always(
-                    /*
-                     * Success callback
-                     */
-                    function replyAlwaysCallback() {
-                        self.set('isSubmitting', false);
-                        // Add timeout to hide form messages
-                        setTimeout(
-                            /*
-                             * Hide success and fail messages
-                             */
-                            function hideMessagesTimeout() {
-                                self.set('submissionError', false);
-                                self.set('submissionSuccess', false);
-                            },
-                            6000
-                        );
-                    }
-                );
-             } else {
-                self.set('submissionError', 'Please, type a message and try again.');
+                    ).fail(
+                        /*
+                         * Fail callback
+                         */
+                        function replyFailCallback() {
+                            self.set('submissionError', '<?php echo JText::_('COM_OSHELPSCOUT_MSG_SUBMISSION_ERROR'); ?>');
+
+                            setSubmissionAsFinished();
+                        }
+                    );
+                } else {
+                    self.set('submissionError', '<?php echo JText::_('COM_OSHELPSCOUT_MSG_TYPE_MESSAGE'); ?>');
+                    setSubmissionAsFinished();
+                }
             }
         },
         /*
@@ -573,12 +609,17 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                  * This method runs after finish the upload, in success or fail.
                  */
                 complete: function dropzoneCompletCallback(t) {
-                    // Files were already upload. Remove all
-                    var dropzone = self.get('dropzone');
-                    dropzone.removeAllFiles();
+                    self.set('isUploadingFiles', false);
 
                     // In success or fail, submit
                     self.reply();
+                },
+                /*
+                 * This method runs just before each file is sent. We want to
+                 * use it to mark the flag isUploadingFiles as true
+                 */
+                sending: function dropzoneSendingCallback() {
+                    self.set('isUploadingFiles', true);
                 },
                 /*
                  * This method runs right after Dropzone is initialized.
@@ -599,15 +640,22 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
     ractive.on('reply', function onReplyCallback(e) {
         var self = this;
 
+        self.set('startedSubmission', true);
+
         // Only directly submit if there are no files to upload
         var canSubmitNow = false,
             dropzone = self.get('dropzone');
 
         try {
-            // Check if we have queued files. If positive, start the upload
+            // Check if we have queued files. If positive, try to start the upload
             if (self.getQueuedFilesCount() > 0) {
-                self.set('isSubmitting', true);
-                dropzone.processQueue();
+                // If there is no upload running and form is valid, process the file queue
+                if (!self.get('isUploadingFiles')) {
+                    // Check if the form is valid before process the queue
+                    if (self.validateForm()) {
+                        dropzone.processQueue();
+                    }
+                }
             } else {
                 // No files. We can submit
                 canSubmitNow = true;
