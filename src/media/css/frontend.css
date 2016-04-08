@@ -68,6 +68,7 @@
 
 .oshs-message-attachments {
     margin: 10px 0 10px 55px;
+    max-width: 500px;
 }
 
 .oshs-message-attachments .oshs-message-attachment {
@@ -79,8 +80,8 @@
     padding: 3px 8px;
     font-size: 12px;
     line-height: 28px;
-    white-space: nowrap;
     padding-bottom: 5px;
+    word-wrap: normal;
 }
 
 .oshs-message-attachments i {
