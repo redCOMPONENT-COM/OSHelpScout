@@ -249,7 +249,6 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
         $message        = '';
 
         try {
-            var_dump($_FILES);
             // Undefined | Multiple Files | $_FILES Corruption Attack
             // If this request falls under any of them, treat it invalid.
             if (!isset($_FILES['file']['error']) ||
