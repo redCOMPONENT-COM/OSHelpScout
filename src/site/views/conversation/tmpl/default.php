@@ -258,7 +258,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
             'isNewConversation'      : <?php echo ($this->isNewConversation) ? 'true' : 'false'; ?>,
             'status'                 : null,
             'statusLabel'            : null,
-            'subject'                : null,
+            'subject'                : '<?php echo @$this->subjects[0]; ?>',
             'threadCount'            : null,
             'isLoading'              : false,
             'isSubmitting'           : false,
