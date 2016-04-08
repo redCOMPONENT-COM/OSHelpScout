@@ -125,7 +125,7 @@ defined('_JEXEC') or die();
             'refreshIntervalObj'     : null,
             'refreshCountDownLabel'  : function() {
                 var value = this.get('refreshCountDown'),
-                    min   = Math.round(value / 60),
+                    min   = Math.floor(value / 60),
                     sec   = value % 60,
                     str   = '';
 

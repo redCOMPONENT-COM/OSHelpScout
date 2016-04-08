@@ -15,27 +15,23 @@ class OSHelpScoutViewConversation extends JViewLegacy
 {
     public function display($tpl = null)
     {
-        $app       = Framework\Factory::getApplication();
-        $mailboxId = OSHelpScout\Free\Helper::getCurrentMailboxId();
-        $params    = OSHelpScout\Free\Helper::getMenuParams();
-
+        $app                  = Framework\Factory::getApplication();
         $this->itemId         = $app->input->get('Itemid', 0);
         $this->conversationId = $app->input->get('id', 0);
-        $this->conversation   = null;
-        $this->statusLabel    = null;
+        $showMessage          = $app->input->get('msg', 0);
+
+        // Check if received a flag to show the success message after insert
+        // This is required since is redirected by JS, not PHP
+        if ($showMessage) {
+            $app->enqueueMessage(JText::_("COM_OSHELPSCOUT_REPLIED_SUCCESSFULLY"), 'info');
+        }
 
         if (empty($this->conversationId)) {
             // Try to recover a temporary ID from the session
             $this->conversationId = OSHelpScout\Free\Helper::getTmpConversationIdFromSession();
         }
 
-        if (!OSHelpScout\Free\Helper::isNewId($this->conversationId)) {
-            // Get the customer's conversation
-            $this->conversation = OSHelpScout\Free\Helper::getConversation($this->conversationId, $mailboxId);
-            $this->statusLabel  = JText::_(
-                OSHelpScout\Free\Helper::getConversationStatusStr($this->conversation->getStatus())
-            );
-        }
+        $this->isNewConversation = OSHelpScout\Free\Helper::isNewId($this->conversationId);
 
         // Make sure the tmp upload data is empty in the session
         OSHelpScout\Free\Helper::cleanUploadSessionData($this->conversationId);

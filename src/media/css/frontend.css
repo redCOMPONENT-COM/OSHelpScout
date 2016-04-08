@@ -86,7 +86,7 @@
 }
 
 .oshs-conversation-reply {
-    margin-bottom: 20px !important;
+    margin-bottom: 50px !important;
     padding-bottom: 10px;
     border-bottom: 1px solid #f5f5f5;
 }
@@ -104,6 +104,7 @@
 
 .dropzone .dz-message {
     margin-left: 50px 0;
+    color: #cacaca;
 }
 
 .oshs-upload-box form {
@@ -201,11 +202,13 @@
     color: #333;
 }
 
-#oshs-conversations-container {
+#oshs-conversations-container,
+#oshs-messages-container {
     position: relative;
 }
 
-#oshs-conversations-container .oshs-auto-refresh {
+#oshs-conversations-container .oshs-auto-refresh,
+#oshs-messages-container .oshs-auto-refresh {
     position: absolute;
     top: -23px;
     right: 0;
@@ -214,7 +217,8 @@
     font-style: italic;
 }
 
-.oshs-refresh-loader {
+#oshs-conversations-container .oshs-refresh-loader,
+#oshs-messages-container .oshs-refresh-loader {
     position: absolute;
     top: -30px;
     right: 0;
