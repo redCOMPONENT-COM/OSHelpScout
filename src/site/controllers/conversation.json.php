@@ -246,17 +246,29 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
         $app            = JFactory::getApplication();
         $session        = JFactory::getSession();
         $conversationId = $app->input->get('conversationId');
+        $message        = '';
 
         try {
+            var_dump($_FILES);
             // Undefined | Multiple Files | $_FILES Corruption Attack
             // If this request falls under any of them, treat it invalid.
             if (!isset($_FILES['file']['error']) ||
                 !is_array($_FILES['file']['error'])
             ) {
-                throw new RuntimeException('Invalid parameters.');
+                if ($_FILES['file']['error'] !== 0) {
+                    throw new RuntimeException('Invalid parameters.');
+                }
             }
 
-            // Check error values.
+            // Check if file has arrays. If not, convert.
+            if (!is_array($_FILES['file']['error'])) {
+                $_FILES['file']['error']    = array($_FILES['file']['error']);
+                $_FILES['file']['name']     = array($_FILES['file']['name']);
+                $_FILES['file']['size']     = array($_FILES['file']['size']);
+                $_FILES['file']['tmp_name'] = array($_FILES['file']['tmp_name']);
+            }
+
+            // Check error values
             foreach ($_FILES['file']['error'] as $error) {
                 switch ($error) {
                     case UPLOAD_ERR_OK:
@@ -315,11 +327,17 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
 
             OSHelpScout\Free\Helper::setUploadSessionData($conversationId, $currentUploads);
 
-            echo 1;
+            $success = true;
         } catch (RuntimeException $e) {
-            echo $e->getMessage();
+            $success = false;
+            $message = $e->getMessage();
         }
 
-        jexit();
+        echo json_encode(
+            array(
+                'success' => $success,
+                'message' => $message
+            )
+        );
     }
 }

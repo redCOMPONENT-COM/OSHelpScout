@@ -83,7 +83,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                     <div class="fallback">
                         <input name="file" type="file" multiple />
                     </div>
-                    <input type="hidden" name="conversationId" value="{{id}}" />
+                    <input type="hidden" name="conversationId" value="{{conversationId}}" />
                     <?php echo JHTML::_('form.token'); ?>
                 </form>
             </div>
@@ -180,10 +180,10 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
 </script>
 
 <script>
-(function(Ractive, $) {
+(function (Ractive, $, Dropzone) {
     Ractive.DEBUG = false;
 
-    Number.prototype.leftZeroPad = function(numZeros) {
+    Number.prototype.leftZeroPad = function (numZeros) {
         var n = Math.abs(this);
         var zeros = Math.max(0, numZeros - Math.floor(n).toString().length );
         var zeroString = Math.pow(10,zeros).toString().substr(1);
@@ -218,7 +218,8 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
             'replyBody'              : '',
             'submissionError'        : false,
             'submissionSuccess'      : null,
-            'refreshCountDownLabel'  : function() {
+            'dropzone'               : null,
+            'refreshCountDownLabel'  : function () {
                 var value = this.get('refreshCountDown'),
                     min   = Math.floor(value / 60),
                     sec   = value % 60,
@@ -227,7 +228,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                 return min.leftZeroPad(1) + ':' + sec.leftZeroPad(2);
             }
         },
-        load: function() {
+        load: function () {
             self = this;
 
             // Avoid look for a thread in new conversations
@@ -245,7 +246,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
             self.set('isLoading', true);
 
             url = 'index.php?option=com_oshelpscout&task=conversation.getItem&format=json&Itemid=<?php echo $this->itemId; ?>';
-            $.getJSON(url, data, function(result) {
+            $.getJSON(url, data, function (result) {
                 if (result.success === true) {
                     self.set('itemId', result.itemId);
                     self.set('conversationId', result.conversationId);
@@ -266,18 +267,20 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
 
                     self.startErrorCountDown();
                 }
-            }).fail(function() {
+            }).fail(function () {
                 self.set('foundError', true);
 
                 self.startErrorCountDown();
-            }).always(function() {
+            }).always(function () {
                 self.set('isLoading', false);
             });
         },
-        oninit: function() {
+        oninit: function () {
+            this.setEvents();
+            this.setDropZone();
             this.load();
         },
-        startCountDown: function(limit) {
+        startCountDown: function (limit) {
             var self = this;
 
             self.set('refreshCountDown', limit);
@@ -286,7 +289,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                 clearInterval(interval);
             }
 
-            interval = setInterval(function() {
+            interval = setInterval(function () {
                 currentTime = self.get('refreshCountDown');
 
                 if (currentTime == 0) {
@@ -303,22 +306,22 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
             }, 1000);
             self.set('refreshIntervalObj', interval);
         },
-        startSuccessCountDown: function() {
+        startSuccessCountDown: function () {
             var interval = this.get('successRefreshInterval');
             this.startCountDown(interval);
         },
-        startErrorCountDown: function() {
+        startErrorCountDown: function () {
             var interval = this.get('errorRefreshInterval');
             this.startCountDown(interval);
         },
-        fixAttachmentLinks: function() {
-            $('.oshs-message-attachments a').each(function() {
+        fixAttachmentLinks: function () {
+            $('.oshs-message-attachments a').each(function () {
                 $this = $(this);
 
                 $this.attr('href', $this.attr('href').replace(/^\//, ''));
             });
         },
-        reply: function() {
+        reply: function () {
             self.set('submissionError', false);
 
             var body = this.get('replyBody');
@@ -336,7 +339,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                         'itemId': self.get('itemId')
                     },
                     dataType: 'json'
-                }).success(function(data) {
+                }).success(function (data) {
                     if (data.success) {
                         self.set('conversationId', data.conversationId);
 
@@ -367,12 +370,12 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                     } else {
                         self.set('submissionError', data.message);
                     }
-                }).fail(function() {
+                }).fail(function () {
                     self.set('submissionError', 'Sorry, your message coudn\'t be sent');
-                }).always(function() {
+                }).always(function () {
                     self.set('isSubmitting', false);
                     // Add timeout to hide form messages
-                    setTimeout(function() {
+                    setTimeout(function () {
                         self.set('submissionError', false);
                         self.set('submissionSuccess', false);
                     }, 6000);
@@ -382,94 +385,77 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                 self.set('submissionError', 'Please, type a message and try again.');
             }
         },
-        setEvents: function() {
+        setEvents: function () {
             var self = this;
 
-            $replyForm.on('submit', function(event) {
+            $replyForm.on('submit', function (event) {
                 event.preventDefault();
+
 
                 self.reply();
             });
+        },
+        getQueuedFilesCount: function () {
+            var queuedFiles = 0,
+                dropzone = this.get('dropzone');
+
+            for (var i = 0; i < dropzone.files.length; i++) {
+                file = dropzone.files[i];
+
+                if (file.status == 'queued') {
+                    queuedFiles++;
+                }
+            }
+
+            return queuedFiles;
+        },
+        setDropZone: function () {
+            var self = this;
+
+            // Set the default options for Dropzone
+            Dropzone.options.helpscoutUpload = {
+                paramName: "file", // The name that will be used to transfer the file
+                maxFilesize: 2, // MB
+                uploadMultiple: true,
+                autoProcessQueue: false,
+                acceptedFiles: 'image/*,application/pdf,.psd,.zip,.tar,.gz,.bz2,.doc,.xml,.html,.txt,.docx,.xmlx',
+                complete: function (t) {
+                    self.reply();
+                },
+                init: function (t) {
+                    // Store the dropzone instance
+                    self.set('dropzone', Dropzone.instances[0]);
+                }
+            };
         }
     });
 
-    ractive.on('load', function(e) {
-        this.load();
-        this.setEvents();
-    });
+    ractive.on('reply', function (e) {
+        var self = this;
 
-    ractive.on('reply', function(e) {
-        this.reply();
+        // Only submit if there are no files to upload
+        var canSubmit = false,
+            dropzone = self.get('dropzone');
+
+        try {
+            if (self.getQueuedFilesCount() > 0) {
+                self.set('isSubmitting', true);
+                dropzone.processQueue();
+            } else {
+                canSubmit = true;
+            }
+        }
+        catch(error) {
+            self.set('submissionError', error);
+
+            canSubmit = false;
+        }
+
+        if (canSubmit) {
+            self.reply();
+        }
     });
 
     window.ractive = ractive;
-})(Ractive, jQuery);
-
-
-
-    // (function($, window, Dropzone) {
-    //     // Event listener for the reply button
-    //     $('#oshs-reply-button').on('click', function() {
-    //         var body = $('#oshs-answer-body').val();
-    //         if (body.trim() != '') {
-    //             $('#oshs-reply-form').submit();
-    //         } else {
-    //             // msg
-    //         }
-    //     });
-
-    //     // Configure the upload manager
-    //     Dropzone.options.helpscoutUpload = {
-    //         paramName: "file", // The name that will be used to transfer the file
-    //         maxFilesize: 2, // MB
-    //         uploadMultiple: true,
-    //         autoProcessQueue: false,
-    //         acceptedFiles: 'image/*,application/pdf,.psd,.zip,.tar,.gz,.bz2,.doc,.xml,.html,.txt,.docx,.xmlx',
-    //         complete: function(t) {
-    //             $('#oshs-reply-form').submit();
-    //         },
-    //         init: function(t) {
-    //             var dropzoneInstance = Dropzone.instances[0];
-
-    //             function getQueuedFilesCount() {
-    //                 var queuedFiles = 0;
-
-    //                 for (var i = 0; i < dropzoneInstance.files.length; i++) {
-    //                     file = dropzoneInstance.files[i];
-
-    //                     if (file.status == 'queued') {
-    //                         queuedFiles++;
-    //                     }
-    //                 }
-
-    //                 return queuedFiles;
-    //             }
-
-    //             // Only submit if there are no files to upload
-    //             $('#oshs-reply-form').on('submit', function() {
-    //                 var canSubmit = false,
-    //                     queuedFiles;
-
-    //                 try {
-    //                     queuedFiles = getQueuedFilesCount();
-
-    //                     if (queuedFiles > 0) {
-    //                         dropzoneInstance.processQueue();
-    //                     } else {
-    //                         canSubmit = true;
-    //                     }
-    //                 }
-    //                 catch(err) {
-    //                     if (typeof(console) != 'undefined') {
-    //                         console.log(err);
-    //                     }
-
-    //                     canSubmit = false;
-    //                 }
-
-    //                 return canSubmit;
-    //             });
-    //         }
-    //     };
-    // })(jQuery, window, Dropzone);
+})(Ractive, jQuery, Dropzone);
 </script>
