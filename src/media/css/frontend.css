@@ -21,7 +21,11 @@
     left: 0;
 }
 
-.oshs-message-date {position: absolute;right: 0;top: 0;}
+.oshs-message-date {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
 
 .oshs-preview-text {
     font-style: italic;
