@@ -573,6 +573,10 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                  * This method runs after finish the upload, in success or fail.
                  */
                 complete: function dropzoneCompletCallback(t) {
+                    // Files were already upload. Remove all
+                    var dropzone = self.get('dropzone');
+                    dropzone.removeAllFiles();
+
                     // In success or fail, submit
                     self.reply();
                 },
