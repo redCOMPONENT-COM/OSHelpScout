@@ -89,7 +89,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
             </div>
 
             <div>
-                <button type="button" on-click="reply" {{#isSubmitting}}disabled{{/isSubmitting}} id="oshs-reply-button" class="uk-button uk-button-primary">{{#if isSubmitting}}<?php echo JText::_('COM_OSHELPSCOUT_SUBMITTING'); ?>{{else}}<?php echo JText::_('COM_OSHELPSCOUT_SUBMIT'); ?>{{/if}}</button>
+                <button type="button" on-click="reply" {{#isSubmitting}}disabled{{/isSubmitting}} id="oshs-reply-button" class="uk-button uk-button-primary">{{#if isSubmitting}}<?php echo JText::_('COM_OSHELPSCOUT_PLEASE_WAIT'); ?>{{else}}<?php echo JText::_('COM_OSHELPSCOUT_SUBMIT'); ?>{{/if}}</button>
 
                 {{#if submissionError}}
                     <div class="uk-alert uk-alert-danger">
