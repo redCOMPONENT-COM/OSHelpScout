@@ -18,6 +18,7 @@ class OSHelpScoutViewConversation extends JViewLegacy
         $app                  = Framework\Factory::getApplication();
         $this->itemId         = $app->input->get('Itemid', 0);
         $this->conversationId = $app->input->get('id', 0);
+        $this->isGuest        = Framework\Factory::getUser()->guest;
         $showMessage          = $app->input->get('msg', 0);
 
         // Check if received a flag to show the success message after insert

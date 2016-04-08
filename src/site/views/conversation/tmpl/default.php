@@ -66,6 +66,17 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
             <form class="uk-form" action="<?php echo JRoute::_('index.php?option=com_oshelpscout&task=conversation.reply'); ?>" method="POST" id="oshs-reply-form">
                 {{#isNewConversation}}
                     <!-- Subject field is only available if this is a new conversation -->
+                    {{#isGuest}}
+                        <!-- If not a member, ask for name and email -->
+                        <div class="uk-form-row">
+                            <input type="text" name="name" value="{{name}}" placeholder="<?php echo JText::_('COM_OSHELPSCOUT_NAME'); ?>" />
+                        </div>
+
+                        <div class="uk-form-row">
+                            <input type="email" name="email" value="{{email}}" placeholder="<?php echo JText::_('COM_OSHELPSCOUT_EMAIL'); ?>" />
+                        </div>
+                    {{/isGuest}}
+
                     <div class="uk-form-row">
                         <?php if (empty($this->subjects)) : ?>
                             <!-- There is no list of subjects -->
@@ -256,9 +267,12 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
             'itemId'                 : '<?php echo $this->itemId; ?>',
             'thread'                 : null, // list of messages for this conversation
             'isNewConversation'      : <?php echo ($this->isNewConversation) ? 'true' : 'false'; ?>,
+            'isGuest'                : <?php echo ($this->isGuest) ? 'true' : 'false'; ?>,
             'status'                 : null,
             'statusLabel'            : null,
             'subject'                : '<?php echo @$this->subjects[0]; ?>',
+            'name'                   : null,
+            'email'                  : null,
             'threadCount'            : null,
             'isLoading'              : false,
             'isSubmitting'           : false,
@@ -441,16 +455,46 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
          * @result {Boolean}
          */
         validateForm: function validateFormMethod() {
-            var body = this.get('replyBody'),
-                valid = body.trim() != '';
+            var self = this;
 
-            if (!valid) {
+            var body = this.get('replyBody'),
+                valid,
+                name,
+                email;
+
+            if (self.get('isGuest')) {
+                var name = self.get('name');
+                if (name == '' || name == null) {
+                    self.set('submissionError', '<?php echo JText::_('COM_OSHELPSCOUT_MSG_TYPE_NAME'); ?>');
+
+                    return false;
+                }
+
+                var email = self.get('email');
+                if (email == '' || email == null) {
+                    self.set('submissionError', '<?php echo JText::_('COM_OSHELPSCOUT_MSG_TYPE_EMAIL'); ?>');
+
+                    return false;
+                }
+
+                // Check if it is a valid email
+                var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                if (!re.test(email)) {
+                    self.set('submissionError', '<?php echo JText::_('COM_OSHELPSCOUT_MSG_TYPE_EMAIL'); ?>');
+
+                    return false
+                }
+            }
+
+            if (body.trim() == '') {
                 self.set('submissionError', '<?php echo JText::_('COM_OSHELPSCOUT_MSG_TYPE_MESSAGE'); ?>');
 
                 self.set('startedSubmission', false);
+
+                return false;
             }
 
-            return valid;
+            return true;
         },
         /*
          * Method triggered to reply the conversation. Should only be called
@@ -487,18 +531,27 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                     // Marking submission as started
                     self.set('isSubmitting', true);
 
+                    // POST data
+                    var data = {
+                        'body': self.get('replyBody'),
+                        '<?php echo JSession::getFormToken(); ?>': 1,
+                        'subject': self.get('subject'),
+                        'conversationId': self.get('conversationId'),
+                        'itemId': self.get('itemId')
+                    };
+
+                    // Add additional fields for guests
+                    if (self.get('isGuest')) {
+                        data.name = self.get('name');
+                        data.email = self.get('email');
+                    }
+
                     // Make the request
                     $.ajax(
                         {
                             type    : 'POST',
                             url     : '<?php echo JRoute::_('index.php?option=com_oshelpscout&task=conversation.reply&format=json'); ?>',
-                            data    : {
-                                'body': self.get('replyBody'),
-                                '<?php echo JSession::getFormToken(); ?>': 1,
-                                'subject': self.get('subject'),
-                                'conversationId': self.get('conversationId'),
-                                'itemId': self.get('itemId')
-                            },
+                            data    : data,
                             dataType: 'json'
                         }
                     ).success(
@@ -556,7 +609,6 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                         }
                     );
                 } else {
-                    self.set('submissionError', '<?php echo JText::_('COM_OSHELPSCOUT_MSG_TYPE_MESSAGE'); ?>');
                     setSubmissionAsFinished();
                 }
             }

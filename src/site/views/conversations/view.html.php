@@ -15,12 +15,13 @@ class OSHelpScoutViewConversations extends JViewLegacy
 {
     public function display($tpl = null)
     {
-        $app          = Framework\Factory::getApplication();
-        $doc          = Framework\Factory::getDocument();
-        $menu         = $app->getMenu()->getActive();
-        $title        = $menu->params->get('custom_title', 'COM_OSHELPSCOUT_CONVERSATIONS');
-        $this->title  = JText::_($title);
-        $this->itemId = $app->input->get('Itemid', 0);
+        $app           = Framework\Factory::getApplication();
+        $doc           = Framework\Factory::getDocument();
+        $menu          = $app->getMenu()->getActive();
+        $title         = $menu->params->get('custom_title', 'COM_OSHELPSCOUT_CONVERSATIONS');
+        $this->title   = JText::_($title);
+        $this->itemId  = $app->input->get('Itemid', 0);
+        $this->isGuest = Framework\Factory::getUser()->guest;
 
         // Render the modules for oshelpscout-content-top position
         $renderer = $doc->loadRenderer('modules');

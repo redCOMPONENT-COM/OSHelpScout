@@ -36,7 +36,12 @@
 }
 
 #oshs-answer-subject {
-    width: 100%;
+    width: 100% !important;
+    background: #fff;
+}
+
+.oshs-conversation-reply form input {
+    width: 100% !important;
     background: #fff;
 }
 

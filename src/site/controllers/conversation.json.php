@@ -1,3 +1,4 @@
+
 <?php
 /**
  * @package   OSHelpScout
@@ -129,25 +130,50 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
 
         $app            = JFactory::getApplication();
         $user           = Framework\Factory::getUser();
+        $hs             = OSHelpScout\Free\Helper::getAPIInstance();
         $customerId     = OSHelpScout\Free\Helper::getCurrentCustomerId();
         $itemId         = $app->input->get('Itemid', 0);
+        $name           = $app->input->get('name', null);
+        $email          = $app->input->get('email', null);
         $success        = false;
         $conversationId = '';
         $subject        = 'Contact';
 
-        if (!empty($customerId) || !$user->guest) {
+        // Check if is a new customer, and create if needed
+        if (empty($customerId) && !empty($name) && !empty($email)) {
+            $parts = explode(" ", $name);
+            $lastName = array_pop($parts);
+            $firstName = implode(" ", $parts);
+
+            $createdBy = new HelpScout\model\Customer();
+            $createdBy->setFirstName($firstName);
+            $createdBy->setLastName($lastName);
+
+            $emailEntry = new stdClass;
+            $emailEntry->value = $email;
+
+            $createdBy->setEmails(array($emailEntry));
+
+            $hs->createCustomer($createdBy);
+
+            $customerId = $createdBy->getId();
+        }
+
+        // No user was created, but it is a logged in user. Let's get the id
+        // querying the API using his email
+        if (empty($customerId) && !$user->guest) {
+            $createdBy = $hs->getCustomerRefProxy(null, $user->email);
+            $customerId = $createdBy->getId();
+        }
+
+        if (!empty($customerId)) {
             try {
-                $hs             = OSHelpScout\Free\Helper::getAPIInstance();
                 $body           = $app->input->getHtml('body');
                 $conversationId = $app->input->get('conversationId', 0);
 
-                if (!empty($customerId)) {
-                    $createdBy = new HelpScout\model\ref\PersonRef();
-                    $createdBy->setId($customerId);
-                    $createdBy->setType("customer");
-                } else {
-                    $createdBy = $hs->getCustomerRefProxy(null, $user->email);
-                }
+                $createdBy = new HelpScout\model\ref\PersonRef();
+                $createdBy->setId($customerId);
+                $createdBy->setType("customer");
 
                 $thread = new HelpScout\model\thread\Customer();
                 $thread->setBody($body);
@@ -231,6 +257,7 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
             array(
                 'success'        => $success,
                 'message'        => $message,
+                'itemId'         => $itemId,
                 'conversationId' => $conversationId,
                 'subject'        => $subject,
                 'status'         => 'active',
