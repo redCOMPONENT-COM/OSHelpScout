@@ -1,4 +1,3 @@
-
 <?php
 /**
  * @package   OSHelpScout
@@ -133,47 +132,52 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
         $hs             = OSHelpScout\Free\Helper::getAPIInstance();
         $customerId     = OSHelpScout\Free\Helper::getCurrentCustomerId();
         $itemId         = $app->input->get('Itemid', 0);
-        $name           = $app->input->get('name', null);
-        $email          = $app->input->get('email', null);
+        $name           = $app->input->getString('name', null);
+        $email          = $app->input->getString('email', null);
         $success        = false;
         $conversationId = '';
         $subject        = 'Contact';
 
-        // Check if is a new customer, and create if needed
-        if (empty($customerId) && !empty($name) && !empty($email)) {
-            $parts = explode(" ", $name);
-            $lastName = array_pop($parts);
-            $firstName = implode(" ", $parts);
+        // Check if the email is already registered
+        if (empty($customerId)) {
+            if ($user->guest) {
+                $createdBy = $hs->getCustomerRefProxy(null, $email);
+            } else {
+                $createdBy = $hs->getCustomerRefProxy(null, $user->email);
+            }
 
-            $createdBy = new HelpScout\model\Customer();
-            $createdBy->setFirstName($firstName);
-            $createdBy->setLastName($lastName);
+            if (!is_object($createdBy)) {
+                // Create a new user, since his email wasn't found
+                $parts = explode(" ", $name);
+                $lastName = array_pop($parts);
+                $firstName = implode(" ", $parts);
 
-            $emailEntry = new stdClass;
-            $emailEntry->value = $email;
+                $createdBy = new HelpScout\model\Customer();
+                $createdBy->setFirstName($firstName);
+                $createdBy->setLastName($lastName);
 
-            $createdBy->setEmails(array($emailEntry));
+                $emailEntry = new HelpScout\model\customer\EmailEntry;
+                $emailEntry->setValue($email);
 
-            $hs->createCustomer($createdBy);
+                $createdBy->setEmails(array($emailEntry));
+
+                $hs->createCustomer($createdBy);
+
+                $customerId = $createdBy->getId();
+            }
 
             $customerId = $createdBy->getId();
+        } else {
+            // We have a specific customerid
+            $createdBy = new HelpScout\model\ref\PersonRef();
+            $createdBy->setId($customerId);
+            $createdBy->setType("customer");
         }
 
-        // No user was created, but it is a logged in user. Let's get the id
-        // querying the API using his email
-        if (empty($customerId) && !$user->guest) {
-            $createdBy = $hs->getCustomerRefProxy(null, $user->email);
-            $customerId = $createdBy->getId();
-        }
-
-        if (!empty($customerId)) {
+        if (is_object($createdBy)) {
             try {
                 $body           = $app->input->getHtml('body');
                 $conversationId = $app->input->get('conversationId', 0);
-
-                $createdBy = new HelpScout\model\ref\PersonRef();
-                $createdBy->setId($customerId);
-                $createdBy->setType("customer");
 
                 $thread = new HelpScout\model\thread\Customer();
                 $thread->setBody($body);
@@ -181,7 +185,6 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
 
                 // Check if there are pending uploaded files to send to HelpScout
                 $currentUploads = OSHelpScout\Free\Helper::getUploadSessionData($conversationId);
-
                 if (!empty($currentUploads)) {
                     $attachments = array();
 
@@ -245,7 +248,7 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
                 $success = false;
             }
         } else {
-            $message = JText::_("COM_OSHELPSCOUT_ERROR_REPLYING");
+            $message = JText::_("COM_OSHELPSCOUT_ERROR_FINDING_CREATING_USER");
             $success = false;
         }
 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+    <layout title="COM_OSHELPSCOUT_CONVERSATION_FORM_VIEW_DEFAULT_TITLE">
+        <message>
+            <![CDATA[COM_OSHELPSCOUT_CONVERSATION_FORM_VIEW_DEFAULT_DESC]]>
+        </message>
+    </layout>
+    <fieldset
+        addfieldpath="/administrator/components/com_oshelpscout/form/fields">
+        <fields name="params">
+            <fieldset name="basic" label="COM_OSHELPSCOUT_OPTIONS">
+                <field name="helpscout_mailbox"
+                    type="hsmailboxes"
+                    default=""
+                    label="COM_OSHELPSCOUT_FIELD_HELPSCOUT_MAILBOX_LABEL"
+                    description="COM_OSHELPSCOUT_FIELD_HELPSCOUT_MAILBOX_DESC" />
+
+                <field name="custom_title"
+                    type="text"
+                    default=""
+                    label="COM_OSHELPSCOUT_FIELD_CUSTOM_TITLE_LABEL"
+                    description="COM_OSHELPSCOUT_FIELD_CUSTOM_TITLE_DESC" />
+
+                <field name="subjects"
+                    type="textarea"
+                    default=""
+                    rows="10"
+                    cols="100"
+                    label="COM_OSHELPSCOUT_FIELD_SUBJECTS_LABEL"
+                    description="COM_OSHELPSCOUT_FIELD_SUBJECTS_DESC" />
+
+                <field name="redirect_to"
+                    type="menuitem"
+                    default=""
+                    label="COM_OSHELPSCOUT_FIELD_REDIRECT_TO_LABEL"
+                    description="COM_OSHELPSCOUT_FIELD_REDIRECT_TO_DESC">
+                    <option value="">COM_OSHELPSCOUT_DONT_REDIRECT</option>
+                </field>
+            </fieldset>
+        </fields>
+    </fieldset>
+</metadata>

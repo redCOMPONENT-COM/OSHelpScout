@@ -20,6 +20,16 @@ class OSHelpScoutViewConversation extends JViewLegacy
         $this->conversationId = $app->input->get('id', 0);
         $this->isGuest        = Framework\Factory::getUser()->guest;
         $showMessage          = $app->input->get('msg', 0);
+        $menu                 = $app->getMenu()->getActive();
+        $this->customTitle    = $menu->params->get('custom_title', 'COM_OSHELPSCOUT_NEW_CONVERSATION');
+        // Used if using as a post only form, not linked to a conversation. Usually as guest
+        $redirectToMenuId     = $menu->params->get('redirect_to', '');
+        $this->redirectTo     = '';
+
+        // Check if we need to set a redirection after submit the form
+        if (!empty($redirectToMenuId)) {
+            $this->redirectTo = JRoute::_('index.php?Itemid=' . $redirectToMenuId);
+        }
 
         // Check if received a flag to show the success message after insert
         // This is required since is redirected by JS, not PHP

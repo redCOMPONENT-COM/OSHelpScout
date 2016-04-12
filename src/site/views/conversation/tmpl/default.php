@@ -23,20 +23,25 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
 ?>
 
 <div class="oshs-container">
-    <div class="oshs-conversation-breadcrumbs">
-        <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversations'); ?>">
-            <i class="uk-icon-angle-double-left"></i>&nbsp;<?php echo JText::_('COM_OSHELPSCOUT_BACK_TO_LIST'); ?>
-        </a>
-    </div>
+    <?php if (!$this->isGuest) : ?>
+        <div class="oshs-conversation-breadcrumbs">
+            <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversations'); ?>">
+                <i class="uk-icon-angle-double-left"></i>&nbsp;<?php echo JText::_('COM_OSHELPSCOUT_BACK_TO_LIST'); ?>
+            </a>
+        </div>
+    <?php endif; ?>
 
     <!-- This container will be dynamically populated -->
     <div id="oshs-conversation-container"></div>
 
-    <div class="oshs-conversation-breadcrumbs">
-        <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversations'); ?>">
-            <i class="uk-icon-angle-double-left"></i>&nbsp;<?php echo JText::_('COM_OSHELPSCOUT_BACK_TO_LIST'); ?>
-        </a>
-    </div>
+    <?php if (!$this->isGuest) : ?>
+        <div class="oshs-conversation-breadcrumbs">
+            <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversations'); ?>">
+                <i class="uk-icon-angle-double-left"></i>&nbsp;<?php echo JText::_('COM_OSHELPSCOUT_BACK_TO_LIST'); ?>
+            </a>
+        </div>
+    <?php endif; ?>
+
 </div>
 
 <!-- Conversation UI template -->
@@ -49,7 +54,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
         <!-- Conversation subject and status -->
         <h2 class="oshs-conversation-subject">
             {{#if isNewConversation}}
-                <?php echo JText::_('COM_OSHELPSCOUT_NEW_CONVERSATION'); ?>
+                <?php echo JText::_($this->customTitle); ?>
             {{else}}
                 {{subject}}
 
@@ -287,6 +292,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
             'submissionSuccess'      : null,
             'dropzone'               : null,
             'isUploadingFiles'       : false,
+            'redirectTo'             : '<?php echo $this->redirectTo; ?>',
             /*
              * Method to format the countdown remaining time in a time format:
              * 0:00
@@ -562,6 +568,15 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                          */
                         function replySuccessCallback(data) {
                             if (data.success) {
+                                // Check if we need to redirect to a specific menu, or refresh the page's data
+                                var redirectTo = self.get('redirectTo');
+                                if (redirectTo != '' && redirectTo != undefined && redirectTo != null) {
+                                    window.location = redirectTo;
+
+                                    return true;
+                                }
+
+                                // We won't redirect. So let's refresh our current page's data
                                 self.set('conversationId', data.conversationId);
 
                                 if (self.get('isNewConversation'))  {
