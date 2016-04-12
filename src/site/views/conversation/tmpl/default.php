@@ -270,7 +270,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
             'isGuest'                : <?php echo ($this->isGuest) ? 'true' : 'false'; ?>,
             'status'                 : null,
             'statusLabel'            : null,
-            'subject'                : '<?php echo @$this->subjects[0]; ?>',
+            'subject'                : '<?php echo @trim($this->subjects[0]); ?>',
             'name'                   : null,
             'email'                  : null,
             'threadCount'            : null,
@@ -319,7 +319,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
 
             // Make the request to load the thread and conversation's data
             $.getJSON(
-                'index.php?option=com_oshelpscout&task=conversation.getItem&format=json&Itemid=<?php echo $this->itemId; ?>',
+                '<?php echo JRoute::_("index.php?option=com_oshelpscout&task=conversation.getItem&format=json&Itemid=" . $this->itemId); ?>',
                 {
                     'conversationId': self.get('conversationId')
                 },

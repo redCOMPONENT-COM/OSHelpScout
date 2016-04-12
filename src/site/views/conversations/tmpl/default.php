@@ -142,7 +142,7 @@ defined('_JEXEC') or die();
 
             self.set('isLoading', true);
 
-            url = 'index.php?option=com_oshelpscout&task=conversations.getItems&format=json&Itemid=<?php echo $this->itemId; ?>';
+            url = '<?php echo JRoute::_("index.php?option=com_oshelpscout&task=conversations.getItems&format=json&Itemid=" . $this->itemId); ?>';
             $.getJSON(url, data, function(result) {
                 if (result.success === true) {
                     self.set('conversations', result.list);
