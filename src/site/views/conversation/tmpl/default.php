@@ -171,17 +171,6 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                     </div>
                 {{/if}}
 
-                {{#if refreshCountDown > 0}}
-                    {{^foundError}}
-                        {{^isLoading}}
-                            <!-- Message about auto-refresh -->
-                            <div class="oshs-auto-refresh">
-                                This list will auto-refresh in {{refreshCountDownLabel()}}
-                            </div>
-                        {{/isLoading}}
-                    {{/foundError}}
-                {{/if}}
-
                 {{^isLoading}}
                     {{^thread}}
                         <!-- Message about empty thread -->

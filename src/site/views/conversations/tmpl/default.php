@@ -45,14 +45,6 @@ defined('_JEXEC') or die();
         </div>
     {{/if}}
 
-    {{#if refreshCountDown > 0}}
-        {{^foundError}}
-            <div class="oshs-auto-refresh">
-                This list will auto-refresh in {{refreshCountDownLabel()}}
-            </div>
-        {{/foundError}}
-    {{/if}}
-
     <div class="uk-width-1-1 uk-overflow-container">
         {{^isLoading}}
             {{^conversations}}
