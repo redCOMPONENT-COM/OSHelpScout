@@ -29,8 +29,8 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
     {
         $app            = Framework\Factory::getApplication();
         $mailboxId      = OSHelpScout\Free\Helper::getCurrentMailboxId();
-        $itemId         = $app->input->get('Itemid', 0);
-        $conversationId = $app->input->get('conversationId', 0);
+        $itemId         = $app->input->getInt('Itemid', 0);
+        $conversationId = $app->input->getInt('conversationId', 0);
         $status         = null;
         $statusLabel    = null;
         $thread         = array();
@@ -131,7 +131,7 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
         $user           = Framework\Factory::getUser();
         $hs             = OSHelpScout\Free\Helper::getAPIInstance();
         $customerId     = OSHelpScout\Free\Helper::getCurrentCustomerId();
-        $itemId         = $app->input->get('Itemid', 0);
+        $itemId         = $app->input->getInt('Itemid', 0);
         $name           = $app->input->getString('name', null);
         $email          = $app->input->getString('email', null);
         $success        = false;
@@ -176,8 +176,8 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
 
         if (is_object($createdBy)) {
             try {
-                $body           = $app->input->getHtml('body');
-                $conversationId = $app->input->get('conversationId', 0);
+                $body           = htmlspecialchars($app->input->getRaw('body'), ENT_NOQUOTES);
+                $conversationId = $app->input->getInt('conversationId', 0);
 
                 $thread = new HelpScout\model\thread\Customer();
                 $thread->setBody($body);
