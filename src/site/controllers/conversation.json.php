@@ -19,6 +19,8 @@ jimport('joomla.filesystem.file');
 
 class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controller\Json
 {
+    const DEFAULT_SUBJECT = 'Contact';
+
     /**
      * Return a specific conversation and threads
      * returns empty array.
@@ -30,7 +32,7 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
         $app            = Framework\Factory::getApplication();
         $mailboxId      = OSHelpScout\Free\Helper::getCurrentMailboxId();
         $itemId         = $app->input->getInt('Itemid', 0);
-        $conversationId = $app->input->getInt('conversationId', 0);
+        $conversationId = $app->input->getString('conversationId', 0);
         $status         = null;
         $statusLabel    = null;
         $thread         = array();
@@ -136,7 +138,7 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
         $email          = $app->input->getString('email', null);
         $success        = false;
         $conversationId = '';
-        $subject        = 'Contact';
+        $subject        = static::DEFAULT_SUBJECT;
 
         // Check if the email is already registered
         if (empty($customerId)) {
@@ -174,10 +176,11 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
             $createdBy->setType("customer");
         }
 
+
         if (is_object($createdBy)) {
             try {
                 $body           = htmlspecialchars($app->input->getRaw('body'), ENT_NOQUOTES);
-                $conversationId = $app->input->getInt('conversationId', 0);
+                $conversationId = $app->input->getString('conversationId', 0);
 
                 $thread = new HelpScout\model\thread\Customer();
                 $thread->setBody($body);
@@ -209,9 +212,19 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
 
                 if (OSHelpScout\Free\Helper::isNewId($conversationId)) {
                     // New Conversation
-                    $subject     = $app->input->getString('subject', 'Contact');
-                    $user        = Framework\Factory::getUser();
-                    $mailbox     = $hs->getMailboxProxy(OSHelpScout\Free\Helper::getCurrentMailboxId());
+                    $subject           = $app->input->getString('subject', static::DEFAULT_SUBJECT);
+                    $additionalSubject = $app->input->getString('additionalSubject', '');
+                    $user              = Framework\Factory::getUser();
+                    $mailbox           = $hs->getMailboxProxy(OSHelpScout\Free\Helper::getCurrentMailboxId());
+
+                    // Check if we have an additional subject to concatenate
+                    if (empty($subject)) {
+                        $subject = static::DEFAULT_SUBJECT;
+                    }
+
+                    if (!empty($additionalSubject)) {
+                        $subject .= ': ' . $additionalSubject;
+                    }
 
                     $conversation = new HelpScout\model\Conversation;
                     $conversation->setType('email');
@@ -275,7 +288,7 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
 
         $app            = JFactory::getApplication();
         $session        = JFactory::getSession();
-        $conversationId = $app->input->get('conversationId');
+        $conversationId = $app->input->getString('conversationId');
         $message        = '';
 
         try {

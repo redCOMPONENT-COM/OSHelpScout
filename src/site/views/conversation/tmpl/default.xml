@@ -29,6 +29,15 @@
                     label="COM_OSHELPSCOUT_FIELD_SUBJECTS_LABEL"
                     description="COM_OSHELPSCOUT_FIELD_SUBJECTS_DESC" />
 
+                <field name="show_additional_subject_field"
+                    type="list"
+                    default="0"
+                    label="COM_OSHELPSCOUT_FIELD_SHOW_ADDITIONAL_SUBJECT_FIELD_LABEL"
+                    description="COM_OSHELPSCOUT_FIELD_SHOW_ADDITIONAL_SUBJECT_FIELD_DESC">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+
                 <field name="redirect_to"
                     type="menuitem"
                     default=""

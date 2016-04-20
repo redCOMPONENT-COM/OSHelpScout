@@ -93,6 +93,15 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                                     <option value="<?php echo $subject; ?>"><?php echo $subject; ?></option>
                                 <?php endforeach; ?>
                             </select>
+
+                            <?php if ($this->showAdditionalSubjField) : ?>
+                                {{#if isNewConversation}}
+                                    <!-- If new conversation and we need to collect an additional subject -->
+                                    <div class="uk-form-row">
+                                        <input type="text" name="additionalSubject" value="{{additionalSubject}}" placeholder="<?php echo JText::_('COM_OSHELPSCOUT_FIELD_ADDITIONAL_SUBJECT'); ?>" />
+                                    </div>
+                                {{/if}}
+                            <?php endif; ?>
                         <?php endif; ?>
                     </div>
                 {{/isNewConversation}}
@@ -281,6 +290,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
             'submissionSuccess'      : null,
             'dropzone'               : null,
             'isUploadingFiles'       : false,
+            'additionalSubject'      : '',
             'redirectTo'             : '<?php echo $this->redirectTo; ?>',
             /*
              * Method to format the countdown remaining time in a time format:
@@ -335,6 +345,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                         self.set('threadCount', result.threadCount);
                         self.set('foundError', false);
                         self.set('isNewConversation', false);
+                        self.set('additionalSubject', '');
 
                         self.startSuccessCountDown();
                         self.fixAttachmentLinks();
@@ -532,7 +543,8 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                         '<?php echo JSession::getFormToken(); ?>': 1,
                         'subject': self.get('subject'),
                         'conversationId': self.get('conversationId'),
-                        'itemId': self.get('itemId')
+                        'itemId': self.get('itemId'),
+                        'additionalSubject': self.get('additionalSubject')
                     };
 
                     // Add additional fields for guests

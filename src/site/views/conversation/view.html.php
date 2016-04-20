@@ -15,16 +15,17 @@ class OSHelpScoutViewConversation extends JViewLegacy
 {
     public function display($tpl = null)
     {
-        $app                  = Framework\Factory::getApplication();
-        $this->itemId         = $app->input->get('Itemid', 0);
-        $this->conversationId = $app->input->get('id', 0);
-        $this->isGuest        = Framework\Factory::getUser()->guest;
-        $showMessage          = $app->input->get('msg', 0);
-        $menu                 = $app->getMenu()->getActive();
-        $this->customTitle    = $menu->params->get('custom_title', 'COM_OSHELPSCOUT_NEW_CONVERSATION');
+        $app                           = Framework\Factory::getApplication();
+        $this->itemId                  = $app->input->get('Itemid', 0);
+        $this->conversationId          = $app->input->get('id', 0);
+        $this->isGuest                 = Framework\Factory::getUser()->guest;
+        $showMessage                   = $app->input->get('msg', 0);
+        $menu                          = $app->getMenu()->getActive();
+        $this->customTitle             = $menu->params->get('custom_title', 'COM_OSHELPSCOUT_NEW_CONVERSATION');
         // Used if using as a post only form, not linked to a conversation. Usually as guest
-        $redirectToMenuId     = $menu->params->get('redirect_to', '');
-        $this->redirectTo     = '';
+        $redirectToMenuId              = $menu->params->get('redirect_to', '');
+        $this->showAdditionalSubjField = (bool)$menu->params->get('show_additional_subject_field', false);
+        $this->redirectTo              = '';
 
         // Check if we need to set a redirection after submit the form
         if (!empty($redirectToMenuId)) {
