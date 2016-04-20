@@ -55,6 +55,12 @@
                     default="Restricted access"
                     label="COM_OSHELPSCOUT_FIELD_GUEST_CUSTOM_CONTENT_LABEL"
                     description="COM_OSHELPSCOUT_FIELD_GUEST_CUSTOM_CONTENT_DESC" />
+
+                <field name="guest_custom_media"
+                    type="textarea"
+                    default=""
+                    label="COM_OSHELPSCOUT_FIELD_GUEST_CUSTOM_MEDIA_LABEL"
+                    description="COM_OSHELPSCOUT_FIELD_GUEST_CUSTOM_MEDIA_DESC" />
             </fieldset>
         </fields>
     </fieldset>

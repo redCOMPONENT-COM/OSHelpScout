@@ -23,13 +23,38 @@ class OSHelpScoutViewConversations extends JViewLegacy
         $this->itemId  = $app->input->get('Itemid', 0);
         $this->isGuest = Framework\Factory::getUser()->guest;
 
-        // If guest, prepare the custom content
         if ($this->isGuest) {
+            // Prepare the custom content
             $this->customGuestContent = $menu->params->get('guest_custom_content', 'Restricted access');
+            $this->customStylesheets  = array();
+            $this->customScripts      = array();
 
             $prepareGuestContent = (bool)$menu->params->get('guest_prepare_custom_content', '0');
             if ($prepareGuestContent) {
                 $this->customGuestContent = JHtml::_('content.prepare', $this->customGuestContent);
+            }
+
+            // If specified, add additional media to the page
+            $customGuestMedia = $menu->params->get('guest_custom_media');
+
+            if (!empty($customGuestMedia)) {
+                $customGuestMedia = explode("\n", $customGuestMedia);
+
+                if (!empty($customGuestMedia)) {
+                    foreach ($customGuestMedia as $media) {
+                        $media = trim($media);
+
+                        // Check if the file exists and add to the specific list according to the extension
+                        if (JFile::exists(JPATH_SITE . '/' . $media)) {
+                            $extension = strtolower(JFile::getExt($media));
+                            if ($extension === 'css') {
+                                $this->customStylesheets[] = $media;
+                            } elseif ($extension === 'js') {
+                                $this->customScripts[] = $media;
+                            }
+                        }
+                    }
+                }
             }
         }
 
