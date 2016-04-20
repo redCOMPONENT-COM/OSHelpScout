@@ -23,6 +23,16 @@ class OSHelpScoutViewConversations extends JViewLegacy
         $this->itemId  = $app->input->get('Itemid', 0);
         $this->isGuest = Framework\Factory::getUser()->guest;
 
+        // If guest, prepare the custom content
+        if ($this->isGuest) {
+            $this->customGuestContent = $menu->params->get('guest_custom_content', 'Restricted access');
+
+            $prepareGuestContent = (bool)$menu->params->get('guest_prepare_custom_content', '0');
+            if ($prepareGuestContent) {
+                $this->customGuestContent = JHtml::_('content.prepare', $this->customGuestContent);
+            }
+        }
+
         // Render the modules for oshelpscout-content-top position
         $renderer = $doc->loadRenderer('modules');
         $options  = array('style' => 'raw');

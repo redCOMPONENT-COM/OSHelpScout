@@ -38,6 +38,24 @@
                     <option value="1">JYES</option>
                 </field>
             </fieldset>
+
+            <fieldset name="guests" label="COM_OSHELPSCOUT_GUEST_OPTIONS">
+                <field name="guest_prepare_custom_content"
+                    type="list"
+                    default="0"
+                    label="COM_OSHELPSCOUT_FIELD_GUEST_PREPARE_CUSTOM_CONTENT_LABEL"
+                    description="COM_OSHELPSCOUT_FIELD_GUEST_PREPARE_CUSTOM_CONTENT_DESC">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+
+                <field name="guest_custom_content"
+                    type="editor"
+                    filter="safehtml"
+                    default="Restricted access"
+                    label="COM_OSHELPSCOUT_FIELD_GUEST_CUSTOM_CONTENT_LABEL"
+                    description="COM_OSHELPSCOUT_FIELD_GUEST_CUSTOM_CONTENT_DESC" />
+            </fieldset>
         </fields>
     </fieldset>
 </metadata>
