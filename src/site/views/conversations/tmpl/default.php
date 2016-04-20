@@ -29,23 +29,8 @@ defined('_JEXEC') or die();
                 <i class="uk-icon-question-circle"></i> <?php echo JText::_('COM_OSHELPSCOUT_NEW_CONVERSATION'); ?>
             </a>
         </p>
-    <?php else:
-        JHtml::_('stylesheet', 'media/com_oscampus/css/grid.css');
-        JHtml::_('stylesheet', 'media/com_oscampus/css/grid-responsive.css');
-        JHtml::_('stylesheet', 'media/com_oscampus/css/style.css');
-        JHtml::_('stylesheet', 'media/com_oscampus/css/themes/default.css');
-        ?>
-        <div class="osc-container" id="oscampus">
-            <div class="osc-section oscampus-lesson-content osc-signup-box">
-                <img src="<?php echo Juri::root(); ?>media/com_oshelpscout/images/placeholder.jpg" width="900" height="504">
-                <div id="signup-overlay">
-                    <div class="osc-overlay-inner">
-                        <h3>Need help with your site? Start a free trial and get professional support ...</h3>
-                        <div><a href="/welcome-support/" class="osc-btn osc-btn-main">Start a free trial!</a></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <?php else: ?>
+        <h4>[ Content for guest users here ]</h4>
     <?php endif; ?>
 
     <div id="oshs-conversations-container"></div>
