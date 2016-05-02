@@ -23,6 +23,8 @@ abstract class Helper
     const UPLOAD_PREFIX_SESSION = 'oshs-uploads-';
     const UPLOAD_PREFIX         = 'oshs-up-';
     const ID_PREFIX_SESSION     = 'oshs-new-id-';
+    const SIGNATURE_SALT        = '*05H31p5CoUt! %k2D 1Sf0';
+    const SIGNATURE_SEPARATOR   = '#@#';
 
     static protected $apiInstance;
 
@@ -136,11 +138,24 @@ abstract class Helper
     /**
      * Get Mailbox Id for the current menu. Returns false, if not found.
      *
+     * @param $mailboxId int  A custom mailbox id
      * @return int
      */
-    public static function getCurrentMailboxId()
+    public static function getCurrentMailboxId($mailboxId = null)
     {
-        $mailboxId = static::getMenuParams()->get('helpscout_mailbox');
+        $app = Framework\Factory::getApplication();
+
+        $mailboxId = $app->input->getRaw('mailboxId', null);
+        if (!empty($mailboxId)) {
+            // Check if it has a valid signature
+            if (static::hasValidSignature($mailboxId)) {
+                $mailboxId = static::getValueFromSignedString($mailboxId);
+            }
+        }
+
+        if (empty($mailboxId)) {
+            $mailboxId = static::getMenuParams()->get('helpscout_mailbox');
+        }
 
         if (empty($mailboxId)) {
             return false;
@@ -152,11 +167,16 @@ abstract class Helper
     /**
      * Get a list of subjects to display in the new conversation form
      *
+     * @param $subjects string  A multi-line string with a custom list of
+     *                          subjects
+     *
      * @return array
      */
-    public static function getSubjectsList()
+    public static function getSubjectsList($subjects = null)
     {
-        $subjects = static::getMenuParams()->get('subjects');
+        if (empty($subjects)) {
+            $subjects = static::getMenuParams()->get('subjects');
+        }
 
         if (empty($subjects)) {
             return array();
@@ -170,7 +190,9 @@ abstract class Helper
                 $subject = trim(substr($subject, 0, strpos($subject, '#')));
             }
 
-            $list[] = $subject;
+            if (!empty($subject)) {
+                $list[] = $subject;
+            }
         }
 
         return $list;
@@ -180,11 +202,15 @@ abstract class Helper
      * Get a list of tags for the given subject
      *
      * @param $subject  string  The subject
+     * @param $subjects string  A multi-line string with a custom list of
+     *                          subjects
      * @return array
      */
-    public static function getTagsForSubject($subject)
+    public static function getTagsForSubject($subject, $subjects = null)
     {
-        $subjects = static::getMenuParams()->get('subjects');
+        if (empty($subjects)) {
+            $subjects = static::getMenuParams()->get('subjects');
+        }
 
         if (empty($subjects)) {
             return array();
@@ -370,5 +396,30 @@ abstract class Helper
         $session = Framework\Factory::getSession();
 
         $session->set(static::ID_PREFIX_SESSION, null);
+    }
+
+    public static function signWithHash($value)
+    {
+        $hash = sha1($value . static::SIGNATURE_SALT);
+
+        return $value . static::SIGNATURE_SEPARATOR . $hash;
+    }
+
+    public static function getValueFromSignedString($signedValue)
+    {
+        $signedValue = explode(static::SIGNATURE_SEPARATOR, $signedValue);
+
+        if (count($signedValue) < 2) {
+            return false;
+        }
+
+        return $signedValue[0];
+    }
+
+    public static function hasValidSignature($signedValue)
+    {
+        $value = static::getValueFromSignedString($signedValue);
+
+        return $signedValue === static::signWithHash($value);
     }
 }

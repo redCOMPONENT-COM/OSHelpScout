@@ -23,7 +23,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
 ?>
 
 <div class="oshs-container">
-    <?php if (!$this->isGuest) : ?>
+    <?php if (!$this->isGuest && $this->showBackLinks) : ?>
         <div class="oshs-conversation-breadcrumbs">
             <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversations'); ?>">
                 <i class="uk-icon-angle-double-left"></i>&nbsp;<?php echo JText::_('COM_OSHELPSCOUT_BACK_TO_LIST'); ?>
@@ -34,7 +34,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
     <!-- This container will be dynamically populated -->
     <div id="oshs-conversation-container"></div>
 
-    <?php if (!$this->isGuest) : ?>
+    <?php if (!$this->isGuest && $this->showBackLinks) : ?>
         <div class="oshs-conversation-breadcrumbs">
             <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversations'); ?>">
                 <i class="uk-icon-angle-double-left"></i>&nbsp;<?php echo JText::_('COM_OSHELPSCOUT_BACK_TO_LIST'); ?>
@@ -544,7 +544,9 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                         'subject': self.get('subject'),
                         'conversationId': self.get('conversationId'),
                         'itemId': self.get('itemId'),
-                        'additionalSubject': self.get('additionalSubject')
+                        'additionalSubject': self.get('additionalSubject'),
+                        'mailboxId': '<?php echo $this->mailboxIdHash; ?>',
+                        'subjectsKey': '<?php echo $this->subjectsKey; ?>'
                     };
 
                     // Add additional fields for guests

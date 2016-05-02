@@ -176,7 +176,6 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
             $createdBy->setType("customer");
         }
 
-
         if (is_object($createdBy)) {
             try {
                 $body           = htmlspecialchars($app->input->getRaw('body'), ENT_NOQUOTES);
@@ -222,22 +221,31 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
                         $subject = static::DEFAULT_SUBJECT;
                     }
 
-                    if (!empty($additionalSubject)) {
-                        $subject .= ': ' . $additionalSubject;
-                    }
-
                     $conversation = new HelpScout\model\Conversation;
                     $conversation->setType('email');
-                    $conversation->setSubject($subject);
                     $conversation->setCustomer($createdBy);
                     $conversation->setCreatedBy($createdBy);
                     $conversation->setMailbox($mailbox);
                     $conversation->addLineItem($thread);
 
+                    // Get subjects to extract the list of tags for the selected one
+                    $session     = Framework\Factory::getSession();
+                    $subjectsKey = $app->input->getRaw('subjectsKey');
+                    $subjects    = array();
+
+                    if (OSHelpScout\Free\Helper::hasValidSignature($subjectsKey)) {
+                        $subjectsKey = OSHelpScout\Free\Helper::getValueFromSignedString($subjectsKey);
+                        $subjects = $session->get($subjectsKey);
+                    }
+
                     // Default tags
-                    $tags   = OSHelpScout\Free\Helper::getTagsForSubject($subject);
-                    $tags[] = JText::_('COM_OSHELPSCOUT_VIA_OSHELPSCOUT_TAG');
+                    $tags = OSHelpScout\Free\Helper::getTagsForSubject($subject, $subjects);
                     $conversation->setTags($tags);
+
+                    if (!empty($additionalSubject)) {
+                        $subject .= ': ' . $additionalSubject;
+                    }
+                    $conversation->setSubject($subject);
 
                     $hs->createConversation($conversation);
                 } else {
@@ -248,7 +256,6 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
                 // Cleanup
                 OSHelpScout\Free\Helper::cleanUploadSessionData($conversationId);
                 OSHelpScout\Free\Helper::cleanUploadTmpFiles($conversationId);
-
                 // If a conversation is defined is because we just created one. Use the new ID to redirect
                 if (isset($conversation)) {
                     $conversationId = $conversation->getId();

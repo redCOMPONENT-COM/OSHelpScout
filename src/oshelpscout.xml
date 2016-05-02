@@ -26,6 +26,10 @@
                 publish="true"
                 ordering="first">OSSystem</extension>
 
+            <extension
+                type="module"
+                element="oshelpscoutform">OSHelpScoutForm</extension>
+
         </relatedExtensions>
         <include>AllediaFreeDefaultFiles</include>
     </alledia>
