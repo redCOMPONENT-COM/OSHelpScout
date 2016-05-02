@@ -8,7 +8,7 @@
     <authorEmail>support@alledia.com</authorEmail>
     <authorUrl>http://www.alledia.com</authorUrl>
     <version>1.5.1b1</version>
-    <description>This Module shows an OSHelpScout form</description>
+    <description>MOD_OSHELPSCOUT_DESC</description>
 
     <alledia>
         <element>oshelpscoutform</element>
