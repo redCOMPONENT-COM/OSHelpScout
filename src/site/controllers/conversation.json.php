@@ -136,6 +136,7 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
         $itemId         = $app->input->getInt('Itemid', 0);
         $name           = $app->input->getString('name', null);
         $email          = $app->input->getString('email', null);
+        $extraInfo      = @json_decode(base64_decode($app->input->getRaw('extraInfo', '')), true);
         $success        = false;
         $conversationId = '';
         $subject        = static::DEFAULT_SUBJECT;
@@ -180,6 +181,22 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
             try {
                 $body           = htmlspecialchars($app->input->getRaw('body'), ENT_NOQUOTES);
                 $conversationId = $app->input->getString('conversationId', 0);
+
+                // Check if we have extra data to send
+                if (!empty($extraInfo) && is_array($extraInfo)) {
+                    $body .= '<br><br><p class="extra-info"><table>';
+                    $body .= '<tr><td colspan="2" style="background: #f0f0f0; padding: 5px;"><h4>' . JText::_('COM_OSHELPSCOUT_EXTRA_INFO') . '</h4></td></tr>';
+
+                    foreach ($extraInfo as $info => $value) {
+                        $body .= sprintf(
+                            '<tr><td style="background: #f0f0f0; padding: 5px;">%s</td><td style="padding: 5px; border: 1px solid #f0f0f0">%s</td></tr>',
+                            ucwords($info),
+                            $value
+                        );
+                    }
+
+                    $body .= '</table></p>';
+                }
 
                 $thread = new HelpScout\model\thread\Customer();
                 $thread->setBody($body);

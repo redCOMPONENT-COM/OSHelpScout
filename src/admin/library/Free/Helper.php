@@ -10,6 +10,7 @@ namespace Alledia\OSHelpScout\Free;
 
 use Alledia\Framework;
 use HelpScout;
+use JURI;
 
 defined('_JEXEC') or die();
 
@@ -421,5 +422,18 @@ abstract class Helper
         $value = static::getValueFromSignedString($signedValue);
 
         return $signedValue === static::signWithHash($value);
+    }
+
+    public static function getExtraInfo()
+    {
+        $vars = array();
+
+        // URL
+        $vars['url'] = JURI::current();
+
+        // UserAgent
+        $vars['user-agent'] = @$_SERVER['HTTP_USER_AGENT'];
+
+        return $vars;
     }
 }

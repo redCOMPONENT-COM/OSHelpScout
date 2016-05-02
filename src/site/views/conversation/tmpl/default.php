@@ -546,7 +546,8 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                         'itemId': self.get('itemId'),
                         'additionalSubject': self.get('additionalSubject'),
                         'mailboxId': '<?php echo $this->mailboxIdHash; ?>',
-                        'subjectsKey': '<?php echo $this->subjectsKey; ?>'
+                        'subjectsKey': '<?php echo $this->subjectsKey; ?>',
+                        'extraInfo': '<?php echo $this->extraInfo; ?>'
                     };
 
                     // Add additional fields for guests

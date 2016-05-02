@@ -124,6 +124,13 @@ class OSHelpScoutViewConversation extends JViewLegacy
         $mailboxId = $this->params->get('helpscout_mailbox', 0);
         $this->mailboxIdHash = OSHelpScout\Free\Helper::signWithHash($mailboxId);
 
+        // Check if needs to collect some environment data
+        if ($this->params->get('collect_env_data', false)) {
+            $this->extraInfo = base64_encode(
+                json_encode(OSHelpScout\Free\Helper::getExtraInfo())
+            );
+        }
+
         parent::display($tpl);
     }
 }
