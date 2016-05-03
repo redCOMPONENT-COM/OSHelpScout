@@ -14,6 +14,7 @@ defined('_JEXEC') or die();
 $extension = Framework\Factory::getExtension('oshelpscout', 'component');
 $staticHash = md5($extension->manifest->version);
 
+JHtml::stylesheet(JUri::base() . 'media/com_oshelpscout/css/frontend.css?' . $staticHash);
 JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $staticHash);
 ?>
 

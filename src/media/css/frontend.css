@@ -102,9 +102,13 @@
 }
 
 #oshs-answer-body {
-    width: 100%;
+    width: 100% !important;
     height: 120px;
     background: #fff;
+}
+
+.mod_oshelpscoutform_link {
+    padding: 15px 0;
 }
 
 /* Upload */

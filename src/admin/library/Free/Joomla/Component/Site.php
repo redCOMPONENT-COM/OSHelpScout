@@ -20,11 +20,4 @@ class Site extends Framework\Joomla\Extension\AbstractComponent
     {
         return parent::getInstance('OSHelpScout');
     }
-
-    public function init()
-    {
-        \JHtml::_('stylesheet', 'media/com_oshelpscout/css/frontend.css');
-
-        parent::init();
-    }
 }

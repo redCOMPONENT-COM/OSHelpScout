@@ -18,6 +18,7 @@ $staticHash = md5($extension->manifest->version);
 
 // Add the static files
 JHtml::stylesheet(JUri::base() . 'media/com_oshelpscout/css/dropzone.css?' . $staticHash);
+JHtml::stylesheet(JUri::base() . 'media/com_oshelpscout/css/frontend.css?' . $staticHash);
 JHtml::script(Juri::base() . 'media/com_oshelpscout/js/dropzone.js?' . $staticHash);
 JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $staticHash);
 ?>
@@ -292,6 +293,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
             'isUploadingFiles'       : false,
             'additionalSubject'      : '',
             'redirectTo'             : '<?php echo $this->redirectTo; ?>',
+            'isModule'               : <?php echo $this->isModule ? 'true' : 'false'; ?>,
             /*
              * Method to format the countdown remaining time in a time format:
              * 0:00
@@ -571,6 +573,10 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                          * @param {Object} data
                          */
                         function replySuccessCallback(data) {
+                            if (typeof window.OSHelpScoutFormBeforeReplyCallback === 'function') {
+                                window.OSHelpScoutFormBeforeReplyCallback(data);
+                            }
+
                             if (data.success) {
                                 // Check if we need to redirect to a specific menu, or refresh the page's data
                                 var redirectTo = self.get('redirectTo');
@@ -580,20 +586,22 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                                     return true;
                                 }
 
-                                // We won't redirect. So let's refresh our current page's data
-                                self.set('conversationId', data.conversationId);
+                                if (!self.get('isModule')) {
+                                    self.set('conversationId', data.conversationId);
 
-                                if (self.get('isNewConversation'))  {
-                                    var newUrl = '<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversation'); ?>&id=' + data.conversationId,
-                                        supportPushState = (typeof window.history != 'undefined')
-                                        && (typeof window.history.pushState != 'undefined');
+                                    // We won't redirect. So let's refresh our current page's data
+                                    if (self.get('isNewConversation'))  {
+                                        var newUrl = '<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversation'); ?>&id=' + data.conversationId,
+                                            supportPushState = (typeof window.history != 'undefined')
+                                            && (typeof window.history.pushState != 'undefined');
 
-                                    // If is new conversation, we need to update the window url to insert the new id
-                                    if (supportPushState) {
-                                        window.history.pushState(null, window.document.title, newUrl);
-                                    } else {
-                                        // Fallback for older browsers, redirecting
-                                        window.location = newUrl + '&msg=1';
+                                        // If is new conversation, we need to update the window url to insert the new id
+                                        if (supportPushState) {
+                                            window.history.pushState(null, window.document.title, newUrl);
+                                        } else {
+                                            // Fallback for older browsers, redirecting
+                                            window.location = newUrl + '&msg=1';
+                                        }
                                     }
 
                                     self.set('isNewConversation', false);
@@ -610,12 +618,23 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                                     self.set('submissionSuccess', data.message);
                                     self.set('isNewConversation', false);
                                     self.load();
+                                } else {
+                                    // If is a new conversation, reload the thread
+                                    self.set('replyBody', '');
+                                    self.set('additionalSubject', '');
+                                    self.set('name', '');
+                                    self.set('email', '');
+                                    self.set('submissionSuccess', data.message);
                                 }
                             } else {
                                 self.set('submissionError', data.message);
                             }
 
                             setSubmissionAsFinished();
+
+                            if (typeof window.OSHelpScoutFormAfterReplyCallback === 'function') {
+                                window.OSHelpScoutFormAfterReplyCallback(data);
+                            }
                         }
                     ).fail(
                         /*
@@ -745,6 +764,6 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
     });
 
     // Publish ractive to the global scope
-    window.ractive = ractive;
+    window.OSHelpScoutForm = ractive;
 })(Ractive, jQuery, Dropzone);
 </script>

@@ -29,6 +29,7 @@ JForm::addFieldPath($basePath . '/models/fields');
 
 // Force to hide the back navigation links
 $params->set('show_back_links', false);
+$params->set('is_module', true);
 
 // Get the view passing the module params and add the correct template path
 $view = $controller->getView('conversation', 'html', '', array('params' => $params));
@@ -39,9 +40,11 @@ $useSlider = $params->get('use_slider_effect', false);
 
 <div class="mod_oshelpscoutform<?php echo $params->get('moduleclass_sfx'); ?>" id="mod_oshelpscoutform_<?php echo $module->id; ?>">
     <?php if ($useSlider) : ?>
-        <a class="mod_oshelpscoutform_link" data-module-id="<?php echo $module->id; ?>">
-            <?php echo JText::_($params->get('toggle_button_label', 'MOD_OSHELPSCOUTFORM_SHOW_FORM')); ?>
-        </a>
+        <div class="mod_oshelpscoutform_link">
+            <a data-module-id="<?php echo $module->id; ?>">
+                <?php echo JText::_($params->get('toggle_button_label', 'MOD_OSHELPSCOUTFORM_SHOW_FORM')); ?>
+            </a>
+        </div>
     <?php endif; ?>
 
     <div
@@ -55,9 +58,14 @@ $useSlider = $params->get('use_slider_effect', false);
 
 <script>
 ;(function($) {
-    $('.mod_oshelpscoutform_link').click(function() {
-        var moduleId = $(this).data('module-id');
-        $panel = $('div.mod_oshelpscoutform_form[data-module-id="<?php echo $module->id; ?>"]').slideToggle();
+    $('.mod_oshelpscoutform_link a').click(function formLinkClick() {
+        $('div.mod_oshelpscoutform_form[data-module-id="<?php echo $module->id; ?>"]').slideToggle();
     });
+
+    window.OSHelpScoutFormAfterReplyCallback = function() {
+        setTimeout(function afterReplyCallback() {
+            $('div.mod_oshelpscoutform_form[data-module-id="<?php echo $module->id; ?>"]').slideUp();
+        }, 4000);
+    }
 })(jQuery);
 </script>

@@ -83,6 +83,7 @@ class OSHelpScoutViewConversation extends JViewLegacy
         // Used if using as a post only form, not linked to a conversation. Usually as guest
         $redirectToMenuId              = $this->params->get('redirect_to', '');
         $this->showAdditionalSubjField = (bool)$this->params->get('show_additional_subject_field', false);
+        $this->isModule                = (bool)$this->params->get('is_module', false);
         $this->redirectTo              = '';
         $this->showBackLinks           = $this->params->get('show_back_links', true);
 
