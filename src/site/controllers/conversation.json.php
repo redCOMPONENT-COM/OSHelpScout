@@ -183,7 +183,7 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
                 $conversationId = $app->input->getString('conversationId', 0);
 
                 // Check if we have extra data to send
-                if (!empty($extraInfo) && is_array($extraInfo)) {
+                if (!empty($extraInfo) && is_array($extraInfo) && OSHelpScout\Free\Helper::isNewId($conversationId)) {
                     $body .= '<br><br><p class="extra-info"><table>';
                     $body .= '<tr><td colspan="2" style="background: #f0f0f0; padding: 5px;"><h4>' . JText::_('COM_OSHELPSCOUT_EXTRA_INFO') . '</h4></td></tr>';
 
