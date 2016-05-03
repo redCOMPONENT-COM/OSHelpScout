@@ -40,7 +40,7 @@ $useSlider = $params->get('use_slider_effect', false);
 
 <div class="mod_oshelpscoutform<?php echo $params->get('moduleclass_sfx'); ?>" id="mod_oshelpscoutform_<?php echo $module->id; ?>">
     <?php if ($useSlider) : ?>
-        <div class="mod_oshelpscoutform_link">
+        <div class="mod_oshelpscoutform_link osc-row-one">
             <a data-module-id="<?php echo $module->id; ?>">
                 <?php echo JText::_($params->get('toggle_button_label', 'MOD_OSHELPSCOUTFORM_SHOW_FORM')); ?>
             </a>
