@@ -2,12 +2,12 @@
 <extension type="module" version="2.5.0" client="site" method="upgrade">
     <name>mod_oshelpscoutform</name>
     <author>Alledia</author>
-    <creationDate>May 02, 2016</creationDate>
+    <creationDate>May 03, 2016</creationDate>
     <copyright>Copyright (C) 2016 Alledia.com</copyright>
     <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
     <authorEmail>support@alledia.com</authorEmail>
     <authorUrl>http://www.alledia.com</authorUrl>
-    <version>1.5.1b1</version>
+    <version>1.6.0</version>
     <description>MOD_OSHELPSCOUT_DESC</description>
 
     <alledia>
