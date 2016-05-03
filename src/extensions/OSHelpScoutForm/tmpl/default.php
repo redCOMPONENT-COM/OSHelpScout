@@ -40,6 +40,8 @@ $useSlider = $params->get('use_slider_effect', false);
 
 <div class="mod_oshelpscoutform<?php echo $params->get('moduleclass_sfx'); ?>" id="mod_oshelpscoutform_<?php echo $module->id; ?>">
     <?php if ($useSlider) : ?>
+        <h3><?php echo JText::_($params->get('custom_title', 'COM_OSHELPSCOUT_NEW_CONVERSATION')); ?></h3>
+
         <div class="mod_oshelpscoutform_link">
             <a data-module-id="<?php echo $module->id; ?>">
                 <?php echo JText::_($params->get('toggle_button_label', 'MOD_OSHELPSCOUTFORM_SHOW_FORM')); ?>

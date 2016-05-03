@@ -53,9 +53,11 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
         {{/isNewConversation}}
 
         <!-- Conversation subject and status -->
-        <h2 class="oshs-conversation-subject">
+        <h3 class="oshs-conversation-subject">
             {{#if isNewConversation}}
-                <?php echo JText::_($this->customTitle); ?>
+                {{^isModule}}
+                    <?php echo JText::_($this->customTitle); ?>
+                {{/isModule}}
             {{else}}
                 {{subject}}
 
@@ -65,7 +67,7 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                     </div>
                 {{/statusLabel}}
             {{/if}}
-        </h2>
+        </h3>
 
         <!-- Form to reply the conversation -->
         <div class="oshs-conversation-reply">
