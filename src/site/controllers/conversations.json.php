@@ -57,7 +57,8 @@ class OSHelpScoutControllerConversations extends OSHelpScout\Free\Joomla\Control
                         $conversation->status      = $item->getStatus();
                         $conversation->statusLabel = JText::_($statusLabel);
                         $conversation->subject     = $item->getSubject();
-                        $conversation->preview     = $item->getPreview();
+                        // $conversation->preview     = $item->getPreview();
+                        $conversation->preview     = '';
 
                         $list[] = $conversation;
                     }

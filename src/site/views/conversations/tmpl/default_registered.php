@@ -63,10 +63,12 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
                             <a href="<?php echo JRoute::_('index.php?option=com_oshelpscout&view=conversation'); ?>&id={{this.id}}">
                                 {{this.subject}}
                             </a>
-                            <div class="oshs-preview-text">
-                                <i class="uk-icon-angle-double-right"></i>
-                                {{this.preview}}
-                            </div>
+                            {{!
+                                <div class="oshs-preview-text">
+                                    <i class="uk-icon-angle-double-right"></i>
+                                    {{this.preview}}
+                                </div>
+                            }}
                         </td>
                         <td class="uk-text-center">
                             <span class="uk-badge uk-badge-notification">{{this.threadCount}}</span>
