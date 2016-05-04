@@ -133,56 +133,64 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
             jexit();
         }
 
-        $app            = JFactory::getApplication();
-        $user           = Framework\Factory::getUser();
-        $hs             = OSHelpScout\Free\Helper::getAPIInstance();
-        $customerId     = OSHelpScout\Free\Helper::getCurrentCustomerId();
-        $itemId         = $app->input->getInt('Itemid', 0);
-        $name           = $app->input->getString('name', null);
-        $email          = $app->input->getString('email', null);
-        $extraInfo      = @json_decode(base64_decode($app->input->getRaw('extraInfo', '')), true);
+        // Default values
         $success        = false;
-        $conversationId = '';
-        $subject        = static::DEFAULT_SUBJECT;
+        $message        = '';
+        $itemId         = 0;
+        $conversationId = 0;
+        $subject        = '';
+        $statusLabel    = '';
 
-        // Check if the email is already registered
-        if (empty($customerId)) {
-            if ($user->guest) {
-                $createdBy = $hs->getCustomerRefProxy(null, $email);
-            } else {
-                $createdBy = $hs->getCustomerRefProxy(null, $user->email);
-            }
+        try {
+            $app            = JFactory::getApplication();
+            $user           = Framework\Factory::getUser();
+            $hs             = OSHelpScout\Free\Helper::getAPIInstance();
+            $customerId     = OSHelpScout\Free\Helper::getCurrentCustomerId();
+            $itemId         = $app->input->getInt('Itemid', 0);
+            $name           = $app->input->getString('name', null);
+            $email          = $app->input->getString('email', null);
+            $extraInfo      = @json_decode(base64_decode($app->input->getRaw('extraInfo', '')), true);
+            $success        = false;
+            $conversationId = '';
+            $subject        = static::DEFAULT_SUBJECT;
 
-            if (!is_object($createdBy)) {
-                // Create a new user, since his email wasn't found
-                $parts = explode(" ", $name);
-                $lastName = array_pop($parts);
-                $firstName = implode(" ", $parts);
+            // Check if the email is already registered
+            if (empty($customerId)) {
+                if ($user->guest) {
+                    $createdBy = $hs->getCustomerRefProxy(null, $email);
+                } else {
+                    $createdBy = $hs->getCustomerRefProxy(null, $user->email);
+                }
 
-                $createdBy = new HelpScout\model\Customer();
-                $createdBy->setFirstName($firstName);
-                $createdBy->setLastName($lastName);
+                if (!is_object($createdBy)) {
+                    // Create a new user, since his email wasn't found
+                    $parts = explode(" ", $name);
+                    $lastName = array_pop($parts);
+                    $firstName = implode(" ", $parts);
 
-                $emailEntry = new HelpScout\model\customer\EmailEntry;
-                $emailEntry->setValue($email);
+                    $createdBy = new HelpScout\model\Customer();
+                    $createdBy->setFirstName($firstName);
+                    $createdBy->setLastName($lastName);
 
-                $createdBy->setEmails(array($emailEntry));
+                    $emailEntry = new HelpScout\model\customer\EmailEntry;
+                    $emailEntry->setValue($email);
 
-                $hs->createCustomer($createdBy);
+                    $createdBy->setEmails(array($emailEntry));
+
+                    $hs->createCustomer($createdBy);
+
+                    $customerId = $createdBy->getId();
+                }
 
                 $customerId = $createdBy->getId();
+            } else {
+                // We have a specific customerid
+                $createdBy = new HelpScout\model\ref\PersonRef();
+                $createdBy->setId($customerId);
+                $createdBy->setType("customer");
             }
 
-            $customerId = $createdBy->getId();
-        } else {
-            // We have a specific customerid
-            $createdBy = new HelpScout\model\ref\PersonRef();
-            $createdBy->setId($customerId);
-            $createdBy->setType("customer");
-        }
-
-        if (is_object($createdBy)) {
-            try {
+            if (is_object($createdBy)) {
                 $body           = htmlspecialchars($app->input->getRaw('body'), ENT_NOQUOTES);
                 $conversationId = $app->input->getString('conversationId', 0);
 
@@ -284,21 +292,21 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
 
                 $message = JText::_("COM_OSHELPSCOUT_REPLIED_SUCCESSFULLY");
                 $success = true;
-            } catch (Exception $e) {
-                OSHelpScout\Free\Helper::logException($e);
-
-                $message = JText::_("COM_OSHELPSCOUT_ERROR_REPLYING");
+            } else {
+                $message = JText::_("COM_OSHELPSCOUT_ERROR_FINDING_CREATING_USER");
                 $success = false;
-
             }
-        } else {
-            $message = JText::_("COM_OSHELPSCOUT_ERROR_FINDING_CREATING_USER");
-            $success = false;
-        }
 
-        $statusLabel = $statusLabel  = JText::_(
-            OSHelpScout\Free\Helper::getConversationStatusStr('active')
-        );
+            $statusLabel = JText::_(
+                OSHelpScout\Free\Helper::getConversationStatusStr('active')
+            );
+        } catch (Exception $e) {
+            OSHelpScout\Free\Helper::logException($e);
+
+            $message = JText::_("COM_OSHELPSCOUT_ERROR_REPLYING");
+            $success = false;
+
+        }
 
         echo json_encode(
             array(
