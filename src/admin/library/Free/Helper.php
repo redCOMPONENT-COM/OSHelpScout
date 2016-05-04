@@ -450,8 +450,8 @@ abstract class Helper
     public static function logException($e)
     {
         \JLog::add(
-            $e.getMessage() . ': ' . static::getLogMessageFromException($e),
-            JLog::ERROR,
+            $e->getMessage() . ': ' . static::getLogMessageFromException($e),
+            \JLog::ERROR,
             'com_oshelpscout'
         );
     }
