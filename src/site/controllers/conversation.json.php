@@ -63,40 +63,43 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
 
                 $conversationThread = $conversation->filteredThread;
                 foreach ($conversationThread as $item) {
-                    $createdBy = $item->getCreatedBy();
+                    // Ignore Drafts
+                    if (!$item->isDraft()) {
+                        $createdBy = $item->getCreatedBy();
 
-                    $tmpItem = new stdClass;
-                    $tmpItem->type         = $item->getType();
-                    $tmpItem->gravatarHash = md5(strtolower(trim($createdBy->getEmail())));
-                    $tmpItem->creatorName     = $createdBy->getFirstName() . ' ' . $createdBy->getLastName();
-                    $tmpItem->creatorType  = $createdBy->getType();
+                        $tmpItem               = new stdClass;
+                        $tmpItem->type         = $item->getType();
+                        $tmpItem->gravatarHash = md5(strtolower(trim($createdBy->getEmail())));
+                        $tmpItem->creatorName  = $createdBy->getFirstName() . ' ' . $createdBy->getLastName();
+                        $tmpItem->creatorType  = $createdBy->getType();
 
-                    // Get dates
-                    $date = Carbon::parse($item->getCreatedAt());
-                    $date->timezone = new DateTimeZone($timezone);
-                    $tmpItem->createdAtRelative = $date->diffForHumans();
-                    $tmpItem->createdAt = $date->format(JText::_('COM_OSHELPSCOUT_DATE_FORMAT'));
+                        // Get dates
+                        $date = Carbon::parse($item->getCreatedAt());
+                        $date->timezone = new DateTimeZone($timezone);
+                        $tmpItem->createdAtRelative = $date->diffForHumans();
+                        $tmpItem->createdAt = $date->format(JText::_('COM_OSHELPSCOUT_DATE_FORMAT'));
 
-                    // Check if body has html code
-                    $body            = trim($item->getBody());
-                    $tmpItem->isHtml = $body != strip_tags($body);
-                    $tmpItem->body   = $body;
+                        // Check if body has html code
+                        $body            = trim($item->getBody());
+                        $tmpItem->isHtml = $body != strip_tags($body);
+                        $tmpItem->body   = $body;
 
-                    // Get the attachments
-                    $attachments          = $item->getAttachments();
-                    $tmpItem->attachments = array();
-                    if (!empty($attachments)) {
-                        foreach ($attachments as $file) {
-                            $tmpFile = new stdClass;
-                            $tmpFile->filename = $file->getFileName();
-                            $tmpFile->url      = $file->getUrl();
-                            $tmpFile->size     = $file->getSize();
+                        // Get the attachments
+                        $attachments          = $item->getAttachments();
+                        $tmpItem->attachments = array();
+                        if (!empty($attachments)) {
+                            foreach ($attachments as $file) {
+                                $tmpFile = new stdClass;
+                                $tmpFile->filename = $file->getFileName();
+                                $tmpFile->url      = $file->getUrl();
+                                $tmpFile->size     = $file->getSize();
 
-                            $tmpItem->attachments[] = $tmpFile;
+                                $tmpItem->attachments[] = $tmpFile;
+                            }
                         }
-                    }
 
-                    $thread[] = $tmpItem;
+                        $thread[] = $tmpItem;
+                    }
                 }
 
                 $threadCount = count($conversationThread);
