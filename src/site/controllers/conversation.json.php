@@ -141,6 +141,7 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
         $subject        = '';
         $statusLabel    = '';
 
+
         try {
             $app            = JFactory::getApplication();
             $user           = Framework\Factory::getUser();
@@ -186,13 +187,14 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
             } else {
                 // We have a specific customerid
                 $createdBy = new HelpScout\model\ref\PersonRef();
-                $createdBy->setId($customerId);
                 $createdBy->setType("customer");
+                $createdBy->setEmail($user->email);
             }
 
             if (is_object($createdBy)) {
                 $body           = htmlspecialchars($app->input->getRaw('body'), ENT_NOQUOTES);
                 $conversationId = $app->input->getString('conversationId', 0);
+
 
                 // Check if we have extra data to send
                 if (!empty($extraInfo) && is_array($extraInfo) && OSHelpScout\Free\Helper::isNewId($conversationId)) {
