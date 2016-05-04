@@ -106,6 +106,8 @@ class OSHelpScoutControllerConversation extends JControllerLegacy
 
                 $message = JText::_("COM_OSHELPSCOUT_REPLIED_SUCCESSFULLY");
             } catch (Exception $e) {
+                OSHelpScout\Free\Helper::logException($e);
+
                 $message = JText::_("COM_OSHELPSCOUT_ERROR_REPLYING");
             }
         } else {
@@ -196,6 +198,8 @@ class OSHelpScoutControllerConversation extends JControllerLegacy
 
             echo 1;
         } catch (RuntimeException $e) {
+            OSHelpScout\Free\Helper::logException($e);
+
             echo $e->getMessage();
         }
 

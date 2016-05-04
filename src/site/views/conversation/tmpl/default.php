@@ -754,6 +754,10 @@ JHtml::script(Juri::base() . 'media/com_oshelpscout/js/ractive.min.js?' . $stati
             }
         }
         catch(error) {
+            if (typeof console === 'object' && typeof error.stack === 'string') {
+                console.log(error.stack);
+            }
+
             self.set('submissionError', error);
 
             canSubmitNow = false;

@@ -436,4 +436,23 @@ abstract class Helper
 
         return $vars;
     }
+
+    public static function convertStringToOneLine($str)
+    {
+        return str_replace("\n", ', ', $str);
+    }
+
+    public static function getLogMessageFromException($e)
+    {
+        return $e->getMessage() . ': ' . static::convertStringToOneLine($e->getTraceAsString());
+    }
+
+    public static function logException($e)
+    {
+        \JLog::add(
+            $e.getMessage() . ': ' . static::getLogMessageFromException($e),
+            JLog::ERROR,
+            'com_oshelpscout'
+        );
+    }
 }

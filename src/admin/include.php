@@ -34,3 +34,13 @@ if (defined('ALLEDIA_FRAMEWORK_LOADED')) {
 
     define('OSHELPSCOUT_LOADED', 1);
 }
+
+
+JLog::addLogger(
+   array(
+        'text_file'         => 'com_oshelpscout.errors.php',
+        'text_entry_format' => '{DATETIME} {PRIORITY} {CLIENTIP}: {MESSAGE}'
+   ),
+   JLog::ALL,
+   array('com_oshelpscout')
+);

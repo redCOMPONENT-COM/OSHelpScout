@@ -15,6 +15,7 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.controller');
 jimport('joomla.filesystem.folder');
 jimport('joomla.filesystem.file');
+jimport('joomla.log.log');
 
 
 class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controller\Json
@@ -284,8 +285,11 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
                 $message = JText::_("COM_OSHELPSCOUT_REPLIED_SUCCESSFULLY");
                 $success = true;
             } catch (Exception $e) {
+                OSHelpScout\Free\Helper::logException($e);
+
                 $message = JText::_("COM_OSHELPSCOUT_ERROR_REPLYING");
                 $success = false;
+
             }
         } else {
             $message = JText::_("COM_OSHELPSCOUT_ERROR_FINDING_CREATING_USER");
@@ -398,6 +402,8 @@ class OSHelpScoutControllerConversation extends OSHelpScout\Free\Joomla\Controll
 
             $success = true;
         } catch (RuntimeException $e) {
+            OSHelpScout\Free\Helper::logException($e);
+
             $success = false;
             $message = $e->getMessage();
         }
